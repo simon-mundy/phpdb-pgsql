@@ -1,15 +1,15 @@
 <?php
 
-namespace Laminas\Db\Pgsql\Platform;
+namespace PhpDb\Adapter\Pgsql\Platform;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Driver\Pgsql;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\Platform\AbstractPlatform;
-use Laminas\Db\Pgsql\Connection as PgSqlConnection;
-use Laminas\Db\Pgsql\Driver\Pdo\Pdo as DriverPdo;
-use Laminas\Db\Sql\Platform\Platform as SqlPlatformDecorator;
-use Laminas\Db\Sql\Platform\PlatformDecoratorInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\Pgsql;
+use PhpDb\Adapter\Exception;
+use PhpDb\Adapter\Platform\AbstractPlatform;
+use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
+use PhpDb\Adapter\Pgsql\Driver\Pdo\Pdo as DriverPdo;
+use PhpDb\Sql\Platform\Platform as SqlPlatformDecorator;
+use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 use PDO;
 
 use function get_resource_type;
@@ -67,7 +67,7 @@ class Postgresql extends AbstractPlatform
         }
 
         throw new Exception\InvalidArgumentException(
-            '$driver must be a Pgsql or Postgresql PDO Laminas\Db\Adapter\Driver, pgsql link resource'
+            '$driver must be a Pgsql or Postgresql PDO PhpDb\Adapter\Driver, pgsql link resource'
             . ' or Postgresql PDO instance'
         );
     }

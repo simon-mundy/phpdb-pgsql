@@ -2,15 +2,15 @@
 
 namespace LaminasTest\Db\Pgsql;
 
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
-use Laminas\Db\Adapter\Profiler\Profiler;
-use Laminas\Db\Adapter\Profiler\ProfilerInterface;
-use Laminas\Db\Pgsql\AdapterServiceFactory;
-use Laminas\Db\Pgsql\Driver;
-use Laminas\Db\Pgsql\Module;
-use Laminas\Db\Pgsql\Platform;
+use PhpDb\Adapter\AdapterInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Adapter\Profiler\Profiler;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
+use PhpDb\Adapter\Pgsql\AdapterServiceFactory;
+use PhpDb\Adapter\Pgsql\Driver;
+use PhpDb\Adapter\Pgsql\Module;
+use PhpDb\Adapter\Pgsql\Platform;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;

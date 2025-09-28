@@ -1,13 +1,13 @@
 <?php
 
-namespace Laminas\Db\Pgsql\Driver\Pgsql;
+namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Driver\StatementInterface;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\ParameterContainer;
-use Laminas\Db\Adapter\Profiler;
-use Laminas\Db\Pgsql\Connection as PgSqlConnection;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Driver\StatementInterface;
+use PhpDb\Adapter\Exception;
+use PhpDb\Adapter\ParameterContainer;
+use PhpDb\Adapter\Profiler;
+use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
 
 use function get_resource_type;
 use function is_array;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Laminas\Db\Pgsql\Driver\Pdo;
+namespace PhpDb\Adapter\Pgsql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\Pdo\Statement as BasePdoStatement;
+use PhpDb\Adapter\Driver\Pdo\Statement as BasePdoStatement;
 
 class Statement extends BasePdoStatement
 {

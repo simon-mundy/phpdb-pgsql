@@ -2,11 +2,11 @@
 
 namespace LaminasTest\Db\Pgsql;
 
-use Laminas\Db\Adapter\Profiler\Profiler;
-use Laminas\Db\Adapter\Profiler\ProfilerInterface;
-use Laminas\Db\Pgsql\Adapter;
-use Laminas\Db\Pgsql\AdapterServiceFactory;
-use Laminas\Db\Pgsql\ConfigProvider;
+use PhpDb\Adapter\Profiler\Profiler;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
+use PhpDb\Adapter\Pgsql\Adapter;
+use PhpDb\Adapter\Pgsql\AdapterServiceFactory;
+use PhpDb\Adapter\Pgsql\ConfigProvider;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Override;

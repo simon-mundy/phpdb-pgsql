@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Pgsql\Driver\Pdo;
+namespace PhpDb\Adapter\Pgsql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

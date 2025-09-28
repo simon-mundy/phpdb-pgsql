@@ -2,10 +2,10 @@
 
 namespace LaminasIntegrationTest\Db\Adapter\Platform;
 
-use Laminas\Db\Adapter\Driver\Pdo;
-use Laminas\Db\Adapter\Platform\Postgresql;
-use Laminas\Db\Pgsql\Connection as PgSqlConnection;
-use Laminas\Db\Pgsql\Driver\Pgsql;
+use PhpDb\Adapter\Driver\Pdo;
+use PhpDb\Adapter\Platform\Postgresql;
+use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
+use PhpDb\Adapter\Pgsql\Driver\Pgsql;
 use Override;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;

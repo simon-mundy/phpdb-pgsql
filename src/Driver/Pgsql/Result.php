@@ -1,10 +1,10 @@
 <?php
 
-namespace Laminas\Db\Pgsql\Driver\Pgsql;
+namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Pgsql\Result as PgSqlResult;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Exception;
+use PhpDb\Adapter\Pgsql\Result as PgSqlResult;
 use ReturnTypeWillChange;
 
 use function get_resource_type;

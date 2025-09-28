@@ -26,54 +26,50 @@
     },
     "extra": {
         "laminas": {
-            "component": "Laminas\\Db\\Pgsql",
-            "config-provider": "Laminas\\Db\\Pgsql\\ConfigProvider"
+            "config-provider": "PhpDb\\Adapter\\Pgsql\\ConfigProvider"
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/axleus/laminas-db"
-        }
-    ],
     "require": {
         "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
-        "laminas/laminas-db": "dev-adapter-migration-mysql-refactor",
-        "ext-pdo": "*",
-        "ext-pdo_pgsql": "*"
+        "php-db/phpdb": "^0.1.0"
     },
     "require-dev": {
         "laminas/laminas-coding-standard": "^3.0.1",
-        "phpunit/phpunit": "^11.5.15",
-        "psalm/plugin-phpunit": "^0.19.2",
-        "vimeo/psalm": "^6.8.8"
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^11.5.15"
     },
     "suggest": {
+        "ext-pdo": "*",
+        "ext-pdo_pgsql": "*",
         "ext-pgsql": "*",
         "laminas/laminas-servicemanager": "Laminas\\ServiceManager component"
     },
     "autoload": {
         "psr-4": {
-            "Laminas\\Db\\Pgsql\\": "src/"
+            "PhpDb\\Adapter\\Pgsql\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "LaminasTest\\Db\\Pgsql\\": "test/unit/",
-            "LaminasIntegrationTest\\Db\\Pgsql\\": "test/integration/"
+            "PhpDbTest\\Adapter\\Pgsql\\": "test/unit/",
+            "PhpDbIntegrationTest\\Adapter\\Pgsql\\": "test/integration/"
         }
     },
     "scripts": {
         "check": [
             "@cs-check",
-            "@test"
+            "@static-analysis",
+            "@test",
+            "@test-integration"
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always --testsuite \"unit test\"",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "test-integration": "phpunit --colors=always --testsuite \"integration test\"",
-        "static-analysis": "psalm --shepherd --stats",
+        "static-analysis": "vendor/bin/phpstan analyse --memory-limit=256M",
+        "sa-generate-baseline": "vendor/bin/phpstan analyse --memory-limit=256M --generate-baseline",
         "upload-coverage": "coveralls -v"
     }
 }

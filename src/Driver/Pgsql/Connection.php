@@ -1,12 +1,12 @@
 <?php
 
-namespace Laminas\Db\Pgsql\Driver\Pgsql;
+namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
-use Laminas\Db\Adapter\Driver\AbstractConnection;
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Pgsql\Connection as PgSqlConnection;
-use Laminas\Db\ResultSet\ResultSetInterface;
+use PhpDb\Adapter\Driver\AbstractConnection;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Exception;
+use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
+use PhpDb\ResultSet\ResultSetInterface;
 
 use function array_filter;
 use function http_build_query;

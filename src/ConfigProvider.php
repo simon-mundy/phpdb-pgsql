@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
 
-namespace Laminas\Db\Pgsql;
+declare(strict_types=1);
 
-use Laminas\Db\Adapter\AdapterInterface;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Platform\PlatformInterface;
+namespace PhpDb\Adapter\Pgsql;
+
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use PhpDb\Adapter\AdapterInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Platform\PlatformInterface;
 
 readonly class ConfigProvider
 {
@@ -23,9 +25,9 @@ readonly class ConfigProvider
                 PlatformInterface::class => Platform\Postgresql::class,
             ],
             'factories' => [
-                AdapterInterface::class => AdapterServiceFactory::class,
-                DriverInterface::class   => Driver\Pdo\DriverFactory::class,
-                Platform\Postgresql::class    => InvokableFactory::class,
+                AdapterInterface::class    => AdapterServiceFactory::class,
+                DriverInterface::class     => Driver\Pdo\DriverFactory::class,
+                Platform\Postgresql::class => InvokableFactory::class,
             ],
         ];
     }

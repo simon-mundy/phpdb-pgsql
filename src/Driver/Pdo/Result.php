@@ -1,8 +1,8 @@
 <?php
 
-namespace Laminas\Db\Pgsql\Driver\Pdo;
+namespace PhpDb\Adapter\Pgsql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\Pdo\Result as BasePdoResult;
+use PhpDb\Adapter\Driver\Pdo\Result as BasePdoResult;
 
 class Result extends BasePdoResult
 {

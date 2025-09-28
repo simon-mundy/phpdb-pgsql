@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\Db\Pgsql\Driver;
+namespace PhpDb\Adapter\Pgsql\Driver;
 
 trait DatabasePlatformNameTrait
 {

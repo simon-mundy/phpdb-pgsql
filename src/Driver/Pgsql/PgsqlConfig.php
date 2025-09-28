@@ -1,8 +1,8 @@
 <?php
 
-namespace Laminas\Db\Pgsql\Driver\Pgsql;
+namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
-use Laminas\Db\Adapter\Exception\InvalidArgumentException;
+use PhpDb\Adapter\Exception\InvalidArgumentException;
 
 class PgsqlConfig
 {

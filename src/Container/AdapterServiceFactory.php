@@ -1,16 +1,17 @@
 <?php
 
-namespace Laminas\Db\Pgsql;
+declare(strict_types=1);
 
-use Laminas\Db\Adapter\AdapterAbstractServiceFactory;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\ResultSet\ResultSetInterface;
+namespace PhpDb\Adapter\Pgsql;
+
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\ResultSet\ResultSetInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-class AdapterServiceFactory extends AdapterAbstractServiceFactory implements FactoryInterface
+class AdapterServiceFactory implements FactoryInterface
 {
     /**
      * Create db adapter service

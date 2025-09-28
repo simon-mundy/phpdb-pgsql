@@ -1,13 +1,13 @@
 <?php
 
-namespace Laminas\Db\Pgsql\Driver\Pgsql;
+namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Exception;
-use Laminas\Db\Adapter\Profiler;
-use Laminas\Db\Pgsql\Connection as PgSqlConnection;
-use Laminas\Db\Pgsql\Driver\DatabasePlatformNameTrait;
-use Laminas\Db\Pgsql\Result as PgSqlResult;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Exception;
+use PhpDb\Adapter\Profiler;
+use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
+use PhpDb\Adapter\Pgsql\Driver\DatabasePlatformNameTrait;
+use PhpDb\Adapter\Pgsql\Result as PgSqlResult;
 
 use function extension_loaded;
 use function is_string;

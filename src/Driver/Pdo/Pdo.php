@@ -1,16 +1,16 @@
 <?php
 
-namespace Laminas\Db\Pgsql\Driver\Pdo;
+namespace PhpDb\Adapter\Pgsql\Driver\Pdo;
 
-use Laminas\Db\Adapter\Driver\ConnectionInterface;
-use Laminas\Db\Adapter\Driver\DriverInterface;
-use Laminas\Db\Adapter\Driver\Feature\DriverFeatureInterface;
-use Laminas\Db\Adapter\Driver\Pdo\AbstractPdo;
-use Laminas\Db\Adapter\Driver\Pdo\Statement;
-use Laminas\Db\Adapter\Driver\ResultInterface;
-use Laminas\Db\Adapter\Driver\PdoStatementInterface;
-use Laminas\Db\Adapter\Profiler;
-use Laminas\Db\Pgsql\Driver\DatabasePlatformNameTrait;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\Feature\DriverFeatureInterface;
+use PhpDb\Adapter\Driver\Pdo\AbstractPdo;
+use PhpDb\Adapter\Driver\Pdo\Statement;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Driver\PdoStatementInterface;
+use PhpDb\Adapter\Profiler;
+use PhpDb\Adapter\Pgsql\Driver\DatabasePlatformNameTrait;
 use Override;
 use PDO as PDOConnection;
 
@@ -73,7 +73,7 @@ class Pdo extends AbstractPdo implements DriverInterface, DriverFeatureInterface
     /**
      * @param resource $resource
      * @param mixed    $context
-     * @return \Laminas\Db\Adapter\Driver\Pdo\Result
+     * @return \PhpDb\Adapter\Driver\Pdo\Result
      */
     public function createResult($resource, $context = null): Result
     {
