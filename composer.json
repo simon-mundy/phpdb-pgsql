@@ -1,17 +1,17 @@
 {
-    "name": "laminas/laminas-db-adapter-pgsql",
-    "description": "SQLite support for laminas-db",
+    "name": "php-db/phpdb-adapter-pgsql",
+    "description": "PostgreSQL support for php-db",
     "license": "BSD-3-Clause",
     "keywords": [
-        "laminas",
+        "php-db",
         "pgsql",
         "db"
     ],
-    "homepage": "https://github.com/axleus/laminas-db-adapter-pgsql/discussions",
+    "homepage": "https://php-db.dev",
     "support": {
-        "issues": "https://github.com/alxeus/laminas-db-adapter-pgsql/issues",
-        "source": "https://github.com/axleus/laminas-db-adapter-pgsql",
-        "forum": "https://github.com/axleus/laminas-db-adapter-pgsql/discussions"
+        "issues": "https://github.com/php-db/phpdb-adapter-pgsql/issues",
+        "source": "https://github.com/php-db/phpdb-adapter-pgsql",
+        "forum": "https://github.com/php-db/phpdb-adapter-pgsql/discussions"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
