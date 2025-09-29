@@ -1,144 +1,91 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
+use Override;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\ResultInterface;
+use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Exception;
-use PhpDb\Adapter\Profiler;
 use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
 use PhpDb\Adapter\Pgsql\Driver\DatabasePlatformNameTrait;
 use PhpDb\Adapter\Pgsql\Result as PgSqlResult;
+use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
 
+use function array_intersect_key;
+use function array_merge;
 use function extension_loaded;
 use function is_string;
 
-class Pgsql implements DriverInterface, Profiler\ProfilerAwareInterface
+class Pgsql implements DriverInterface, ProfilerAwareInterface
 {
     use DatabasePlatformNameTrait;
 
-    /** @var Connection */
-    protected Connection $connection;
-
-    /** @var Statement */
-    protected Statement $statementPrototype;
-
-    /** @var Result */
-    protected Result $resultPrototype;
-
-    /** @var null|Profiler\ProfilerInterface */
-    protected ?Profiler\ProfilerInterface $profiler;
+    protected ?ProfilerInterface $profiler = null;
 
     /** @var array */
     protected $options = [
         'buffer_results' => false,
     ];
 
-    /**
-     * Constructor
-     *
-     * @param array|Connection|resource $connection
-     * @param array                     $options
-     */
     public function __construct(
-        $connection,
-        ?Statement $statementPrototype = null,
-        ?Result $resultPrototype = null,
-        $options = null
+        protected readonly ConnectionInterface&Connection $connection,
+        protected readonly StatementInterface&Statement $statementPrototype,
+        protected readonly ResultInterface $resultPrototype,
+        array $options = []
     ) {
-        if (! $connection instanceof Connection) {
-            $connection = new Connection($connection);
-        }
+        $this->checkEnvironment();
 
-        $this->registerConnection($connection);
-        $this->registerStatementPrototype($statementPrototype ?: new Statement());
-        $this->registerResultPrototype($resultPrototype ?: new Result());
+        //todo: verify this usage
+        $options = array_intersect_key(array_merge($this->options, $options), $this->options);
+
+        if ($this->connection instanceof DriverAwareInterface) {
+            $this->connection->setDriver($this);
+        }
+        if ($this->statementPrototype instanceof DriverAwareInterface) {
+            $this->statementPrototype->setDriver($this);
+        }
     }
 
-    /**
-     * @return $this Provides a fluent interface
-     */
-    public function setProfiler(Profiler\ProfilerInterface $profiler): static
+    #[Override]
+    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
     {
         $this->profiler = $profiler;
-
-        if ($this->connection instanceof Profiler\ProfilerAwareInterface) {
+        if ($this->connection instanceof ProfilerAwareInterface) {
             $this->connection->setProfiler($profiler);
         }
 
-        if ($this->statementPrototype instanceof Profiler\ProfilerAwareInterface) {
+        if ($this->statementPrototype instanceof ProfilerAwareInterface) {
             $this->statementPrototype->setProfiler($profiler);
         }
 
         return $this;
     }
 
-    /**
-     * @return null|Profiler\ProfilerInterface
-     */
-    public function getProfiler()
+    #[Override]
+    public function getProfiler(): ?ProfilerInterface
     {
         return $this->profiler;
     }
 
-    /**
-     * Register connection
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function registerConnection(Connection $connection)
-    {
-        $this->connection = $connection;
-        $this->connection->setDriver($this);
-
-        return $this;
-    }
-
-    /**
-     * Register statement prototype
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function registerStatementPrototype(Statement $statement)
-    {
-        $this->statementPrototype = $statement;
-        $this->statementPrototype->setDriver($this); // needs access to driver to createResult()
-
-        return $this;
-    }
-
-    /**
-     * Register result prototype
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function registerResultPrototype(Result $result)
-    {
-        $this->resultPrototype = $result;
-
-        return $this;
-    }
-
-    /**
-     * Check environment
-     *
-     * @throws Exception\RuntimeException
-     * @return void
-     */
-    public function checkEnvironment()
+    #[Override]
+    public function checkEnvironment(): bool
     {
         if (! extension_loaded('pgsql')) {
             throw new Exception\RuntimeException(
                 'The PostgreSQL (pgsql) extension is required for this adapter but the extension is not loaded'
             );
         }
+        return true;
     }
 
-    /**
-     * Get connection
-     *
-     * @return Connection
-     */
-    public function getConnection()
+    #[Override]
+    public function getConnection(): ConnectionInterface&Connection
     {
         return $this->connection;
     }
@@ -146,10 +93,10 @@ class Pgsql implements DriverInterface, Profiler\ProfilerAwareInterface
     /**
      * Create statement
      *
-     * @param string|null $sqlOrResource
-     * @return Statement
+     * @param resource|string|null $sqlOrResource
      */
-    public function createStatement($sqlOrResource = null)
+    #[Override]
+    public function createStatement($sqlOrResource = null): StatementInterface&Statement
     {
         $statement = clone $this->statementPrototype;
 
@@ -169,54 +116,40 @@ class Pgsql implements DriverInterface, Profiler\ProfilerAwareInterface
     /**
      * Create result
      *
-     * @param PgSqlResult|PgSqlConnection $resource
-     * @return Result
+     * @param resource|PgSqlResult|PgSqlConnection $resource
      */
-    public function createResult($resource)
+    #[Override]
+    public function createResult($resource): ResultInterface&Result
     {
+        /** @var Result $result */
         $result = clone $this->resultPrototype;
         $result->initialize($resource, $this->connection->getLastGeneratedValue());
 
         return $result;
     }
 
-    /**
-     * @return Result
-     */
-    public function getResultPrototype()
+    public function getResultPrototype(): ResultInterface&Result
     {
         return $this->resultPrototype;
     }
 
-    /**
-     * Get prepare Type
-     *
-     * @return string
-     */
-    public function getPrepareType()
+    #[Override]
+    public function getPrepareType(): string
     {
         return self::PARAMETERIZATION_POSITIONAL;
     }
 
-    /**
-     * Format parameter name
-     *
-     * @param string $name
-     * @param mixed  $type
-     * @return string
-     */
-    public function formatParameterName($name, $type = null)
+    #[Override]
+    public function formatParameterName(string $name, ?string $type = null): string
     {
         return '$#';
     }
 
     /**
      * Get last generated value
-     *
-     * @param string $name
-     * @return mixed
      */
-    public function getLastGeneratedValue($name = null)
+    #[Override]
+    public function getLastGeneratedValue(?string $name = null): int|string|false|null
     {
         return $this->connection->getLastGeneratedValue($name);
     }

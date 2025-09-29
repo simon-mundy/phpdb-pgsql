@@ -1,12 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
+use Override;
 use PhpDb\Adapter\Driver\AbstractConnection;
+use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\DriverAwareInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Exception;
-use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
 use PhpDb\ResultSet\ResultSetInterface;
+use PgSql\Connection as PgSqlConnection;
+use SebastianBergmann\CodeCoverage\Driver\Driver;
 
 use function array_filter;
 use function http_build_query;
@@ -23,25 +30,18 @@ use function sprintf;
 use function str_replace;
 use function urldecode;
 
+use const PGSQL_CONNECT_ASYNC;
 use const PGSQL_CONNECT_FORCE_NEW;
 
-class Connection extends AbstractConnection
+class Connection extends AbstractConnection implements DriverAwareInterface
 {
     /** @var Pgsql */
     protected $driver;
 
-    /** @var PgSqlConnection */
-    protected PgSqlConnection $resource = null;
-
     /** @var null|int PostgreSQL connection type */
     protected ?int $type = null;
 
-    /**
-     * Constructor
-     *
-     * @param PgSqlConnection|array|null $connectionInfo
-     */
-    public function __construct(PgSqlConnection|array $connectionInfo = null)
+    public function __construct(PgSqlConnection|array|null $connectionInfo = null)
     {
         if (is_array($connectionInfo)) {
             $this->setConnectionParameters($connectionInfo);
@@ -50,13 +50,7 @@ class Connection extends AbstractConnection
         }
     }
 
-    /**
-     * Set resource
-     *
-     * @param PgSqlConnection $resource
-     * @return $this Provides a fluent interface
-     */
-    public function setResource(PgSqlConnection $resource): static
+    public function setResource(PgSqlConnection $resource): ConnectionInterface
     {
         $this->resource = $resource;
 
@@ -64,11 +58,9 @@ class Connection extends AbstractConnection
     }
 
     /**
-     * Set driver
-     *
-     * @return $this Provides a fluent interface
+     * old param type hint Pgsql $driver
      */
-    public function setDriver(Pgsql $driver): static
+    public function setDriver(DriverInterface $driver): DriverAwareInterface
     {
         $this->driver = $driver;
 
