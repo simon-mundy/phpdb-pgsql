@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
-use Override;
+use PgSql\Connection as PgSqlConnection;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverAwareInterface;
@@ -12,8 +12,6 @@ use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Exception;
 use PhpDb\ResultSet\ResultSetInterface;
-use PgSql\Connection as PgSqlConnection;
-use SebastianBergmann\CodeCoverage\Driver\Driver;
 
 use function array_filter;
 use function http_build_query;
@@ -30,7 +28,6 @@ use function sprintf;
 use function str_replace;
 use function urldecode;
 
-use const PGSQL_CONNECT_ASYNC;
 use const PGSQL_CONNECT_FORCE_NEW;
 
 class Connection extends AbstractConnection implements DriverAwareInterface
@@ -68,7 +65,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     }
 
     /**
-     * @param int|null $type
      * @return $this Provides a fluent interface
      */
     public function setType(?int $type): static
@@ -86,6 +82,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     /**
      * {@inheritDoc}
+     *
      * @return null|string
      */
     public function getCurrentSchema(): bool|string
@@ -104,6 +101,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     /**
      * {@inheritDoc}
+     *
      * @throws Exception\RuntimeException On failure.
      */
     public function connect(): static
@@ -224,6 +222,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     /**
      * {@inheritDoc}
+     *
      * @throws Exception\InvalidQueryException
      * @return resource|ResultSetInterface
      */
@@ -249,6 +248,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     /**
      * {@inheritDoc}
+     *
      * @return string
      */
     public function getLastGeneratedValue($name = null): bool|int|string|null
@@ -266,8 +266,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     /**
      * Get Connection String
-     *
-     * @return string
      */
     private function getConnectionString(): string
     {

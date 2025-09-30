@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\Db\Pgsql;
 
-use PhpDb\Adapter\Profiler\Profiler;
-use PhpDb\Adapter\Profiler\ProfilerInterface;
-use PhpDb\Adapter\Pgsql\Adapter;
-use PhpDb\Adapter\Pgsql\AdapterServiceFactory;
-use PhpDb\Adapter\Pgsql\ConfigProvider;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Override;
+use PhpDb\Adapter\Adapter;
+use PhpDb\Adapter\Pgsql\ConfigProvider;
+use PhpDb\Adapter\Pgsql\Container\AdapterServiceFactory;
+use PhpDb\Adapter\Profiler\Profiler;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
-
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
@@ -52,8 +53,8 @@ final class AdapterServiceFactoryTest extends TestCase
         $services = $this->createServiceManager([
             'db' => [
                 'driver'   => 'Pdo_Pgsql',
-                'database' => ':memory:'
-            ]
+                'database' => ':memory:',
+            ],
         ]);
 
         $this->factory->__invoke($services, Adapter::class);
@@ -69,8 +70,8 @@ final class AdapterServiceFactoryTest extends TestCase
             'db' => [
                 'driver'   => 'Pdo_Pgsql',
                 'database' => ':memory:',
-                'profiler' => true
-            ]
+                'profiler' => true,
+            ],
         ]);
 
         $adapter = $this->factory->__invoke($services, Adapter::class);
@@ -87,8 +88,8 @@ final class AdapterServiceFactoryTest extends TestCase
             'db' => [
                 'driver'   => 'Pdo_Pgsql',
                 'database' => ':memory:',
-                'profiler' => Profiler::class
-            ]
+                'profiler' => Profiler::class,
+            ],
         ]);
 
         $adapter = $this->factory->__invoke($services, Adapter::class);
@@ -105,8 +106,8 @@ final class AdapterServiceFactoryTest extends TestCase
             'db' => [
                 'driver'   => 'Pdo_Pgsql',
                 'database' => ':memory:',
-                'profiler' => $this->getMockBuilder(ProfilerInterface::class)->getMock()
-            ]
+                'profiler' => $this->getMockBuilder(ProfilerInterface::class)->getMock(),
+            ],
         ]);
 
         $adapter = $this->factory->__invoke($services, Adapter::class);

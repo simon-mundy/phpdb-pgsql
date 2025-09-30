@@ -1,29 +1,29 @@
 <?php
 
-namespace LaminasTest\Db\Pgsql;
+declare(strict_types=1);
 
+namespace PhpDbTest\Db\Pgsql;
+
+use Override;
+use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\ParameterContainer;
-use PhpDb\Adapter\Pgsql\Platform\Pgsql as PgsqlPlatform;
+use PhpDb\Adapter\Pgsql\Driver\Pdo\Pdo;
+use PhpDb\Adapter\Pgsql\Platform\Postgresql as PgsqlPlatform;
 use PhpDb\Adapter\Profiler;
 use PhpDb\ResultSet\ResultSet;
 use PhpDb\ResultSet\ResultSetInterface;
-use PhpDb\Adapter\Pgsql\Adapter;
-use PhpDb\Adapter\Pgsql\Driver\Pdo\Pdo;
-use PhpDb\Adapter\Pgsql\Driver\Pdo\Statement;
-use LaminasTest\Db\Pgsql\TestAsset\TemporaryResultSet;
-use Override;
+use PhpDbTest\TestAsset\TemporaryResultSet;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-
-use function extension_loaded;
 
 #[CoversMethod(Adapter::class, 'setProfiler')]
 #[CoversMethod(Adapter::class, 'getProfiler')]
@@ -46,6 +46,8 @@ final class AdapterTest extends TestCase
 
     protected StatementInterface&MockObject $mockStatement;
 
+    protected ResultSetInterface&MockObject $mockResultSet;
+
     protected Adapter $adapter;
 
     #[TestDox('unit test: Test setProfiler() will store profiler')]
@@ -61,28 +63,13 @@ final class AdapterTest extends TestCase
         $this->adapter->setProfiler($profiler = new Profiler\Profiler());
         self::assertSame($profiler, $this->adapter->getProfiler());
 
-        $adapter = new Adapter(['driver' => $this->mockDriver, 'profiler' => true], $this->mockPlatform);
+        $adapter = new Adapter(
+            $this->mockDriver,
+            $this->mockPlatform,
+            $this->getMockBuilder(ResultSetInterface::class)->getMock(),
+            $profiler
+        );
         self::assertInstanceOf(Profiler\Profiler::class, $adapter->getProfiler());
-    }
-
-    #[TestDox('unit test: Test createDriverFromParameters() will create proper driver type')]
-    public function testCreateDriver(): void
-    {
-        if (extension_loaded('pdo')) {
-            $adapter = new Adapter(['driver' => 'pdo_sqlite'], $this->mockPlatform);
-            self::assertInstanceOf(Pdo::class, $adapter->driver);
-            unset($adapter);
-        }
-    }
-
-    #[TestDox('unit test: Test createPlatformFromDriver() will create proper platform from driver')]
-    public function testCreatePlatform(): void
-    {
-        $driver = clone $this->mockDriver;
-        $driver->expects($this->any())->method('getDatabasePlatformName')->willReturn('Pgsql');
-        $adapter = new Adapter($driver);
-        self::assertInstanceOf(PgsqlPlatform::class, $adapter->platform);
-        unset($adapter, $driver);
     }
 
     #[TestDox('unit test: Test getDriver() will return driver object')]
@@ -218,9 +205,9 @@ final class AdapterTest extends TestCase
         self::assertSame($this->mockStatement, $this->adapter->createStatement());
     }
 
-    public function test__get(): void
+    #[TestDox('unit test: Test __get() magic method')]
+    public function testMagicGet(): void
     {
-        // @codingStandardsIgnoreEnd
         self::assertSame($this->mockDriver, $this->adapter->driver);
         /** @psalm-suppress UndefinedMagicPropertyFetch */
         self::assertSame($this->mockDriver, $this->adapter->DrivER);
@@ -232,8 +219,6 @@ final class AdapterTest extends TestCase
         $this->expectExceptionMessage('Invalid magic');
         $this->adapter->foo;
     }
-
-    // @codingStandardsIgnoreStart
 
     /**
      * @throws Exception
@@ -251,11 +236,17 @@ final class AdapterTest extends TestCase
                                      ])
                                      ->getMock();
 
+        $this->mockResultSet = $this->getMockBuilder(ResultSetInterface::class)->getMock();
+
         $this->mockDriver->method('getDatabasePlatformName')->willReturn('Pgsql');
         $this->mockDriver->method('checkEnvironment')->willReturn(true);
         $this->mockDriver->method('getConnection')->willReturn($this->mockConnection);
-        $this->mockDriver->method('createStatement')->willReturn($this->mockStatement);
+        //$this->mockDriver->method('createStatement')->willReturn($this->mockStatement);
 
-        $this->adapter = new Adapter($this->mockDriver, $this->mockPlatform);
+        $this->adapter = new Adapter(
+            $this->mockDriver,
+            $this->mockPlatform,
+            $this->mockResultSet
+        );
     }
 }

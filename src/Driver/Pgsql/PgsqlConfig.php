@@ -4,13 +4,24 @@ namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
 use PhpDb\Adapter\Exception\InvalidArgumentException;
 
+use function filter_var_array;
+use function strtolower;
+
+use const FILTER_FLAG_EMPTY_STRING_NULL;
+use const FILTER_FLAG_STRIP_HIGH;
+use const FILTER_FLAG_STRIP_LOW;
+use const FILTER_NULL_ON_FAILURE;
+use const FILTER_SANITIZE_ENCODED;
+use const FILTER_SANITIZE_URL;
+use const FILTER_VALIDATE_INT;
+
 class PgsqlConfig
 {
     public function __invoke(array $parameters): array
     {
         $connectionParameters = [];
         foreach ($parameters as $name => $value) {
-            $name                        = match (strtolower($name)) {
+            $name = match (strtolower($name)) {
                 'host', 'hostname' => 'host',
                 'user', 'username' => 'user',
                 'password', 'passwd', 'pw' => 'password',

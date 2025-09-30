@@ -19,7 +19,7 @@ class Pdo extends AbstractPdo
      * @param PDOStatement $resource
      */
     #[Override]
-    public function createResult($resource, $context = null): ResultInterface
+    public function createResult($resource): ResultInterface
     {
         /** @var Result $result */
         $result = clone $this->resultPrototype;

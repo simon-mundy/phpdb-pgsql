@@ -21,12 +21,12 @@ readonly class ConfigProvider
     public function getDependencies(): array
     {
         return [
-            'aliases' => [
+            'aliases'   => [
                 PlatformInterface::class => Platform\Postgresql::class,
             ],
             'factories' => [
-                AdapterInterface::class    => AdapterServiceFactory::class,
-                DriverInterface::class     => Driver\Pdo\DriverFactory::class,
+                AdapterInterface::class    => Container\AdapterServiceFactory::class,
+                DriverInterface::class     => Container\PdoDriverInterfaceFactory::class,
                 Platform\Postgresql::class => InvokableFactory::class,
             ],
         ];

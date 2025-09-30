@@ -67,7 +67,6 @@ class Pgsql implements DriverInterface, ProfilerAwareInterface
         return $this;
     }
 
-    #[Override]
     public function getProfiler(): ?ProfilerInterface
     {
         return $this->profiler;

@@ -1,9 +1,11 @@
 <?php
 
-namespace LaminasIntegrationTest\Db\Adapter\Driver\Pdo\Postgresql;
+declare(strict_types=1);
 
-use PhpDb\Adapter\Adapter;
+namespace PhpDbIntegrationTest\Db\Adapter\Driver\Pdo\Postgresql;
+
 use Override;
+use PhpDb\Adapter\Adapter;
 
 use function getenv;
 use function is_string;
@@ -16,7 +18,10 @@ trait AdapterTrait
     #[Override]
     protected function setUp(): void
     {
-        if (! is_string(getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL')) || strtolower(getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL')) !== 'true') {
+        if (
+            ! is_string(getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL'))
+            || strtolower(getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL')) !== 'true'
+        ) {
             $this->markTestSkipped('pdo_pgsql integration tests are not enabled!');
         }
 

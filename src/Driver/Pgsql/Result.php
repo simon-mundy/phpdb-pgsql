@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
+use PgSql\Result as PgSqlResult;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Exception;
-use PhpDb\Adapter\Pgsql\Result as PgSqlResult;
 use ReturnTypeWillChange;
 
-use function get_resource_type;
-use function is_resource;
 use function pg_affected_rows;
 use function pg_fetch_assoc;
 use function pg_num_fields;
@@ -17,16 +17,13 @@ use function pg_num_rows;
 // phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse
 class Result implements ResultInterface
 {
-    /** @var resource */
+    /** @var PgSqlResult */
     protected $resource;
 
-    /** @var int */
     protected int $position = 0;
 
-    /** @var int */
     protected int $count = 0;
 
-    /** @var null|mixed */
     protected mixed $generatedValue;
 
     /**
@@ -37,17 +34,17 @@ class Result implements ResultInterface
      * @return void
      * @throws Exception\InvalidArgumentException
      */
-    public function initialize($resource, $generatedValue)
+    public function initialize(PgSqlResult $resource, $generatedValue)
     {
-        if (
-            ! $resource instanceof PgSqlResult
-            && (
-                ! is_resource($resource)
-                || 'pgsql result' !== get_resource_type($resource)
-            )
-        ) {
-            throw new Exception\InvalidArgumentException('Resource not of the correct type.');
-        }
+        // if (
+        //     ! $resource instanceof PgSqlResult
+        //     && (
+        //         ! is_resource($resource)
+        //         || 'pgsql result' !== get_resource_type($resource)
+        //     )
+        // ) {
+        //     throw new Exception\InvalidArgumentException('Resource not of the correct type.');
+        // }
 
         $this->resource       = $resource;
         $this->count          = pg_num_rows($this->resource);
@@ -112,42 +109,28 @@ class Result implements ResultInterface
         $this->position = 0;
     }
 
-    /**
-     * Buffer
-     *
-     * @return null
-     */
-    public function buffer()
+    /** todo: track this */
+    public function buffer(): void
     {
-        return null;
     }
 
     /**
      * Is buffered
-     *
-     * @return false
      */
-    public function isBuffered()
+    public function isBuffered(): ?bool
     {
         return false;
     }
 
-    /**
-     * Is query result
-     *
-     * @return bool
-     */
-    public function isQueryResult()
+    public function isQueryResult(): bool
     {
         return pg_num_fields($this->resource) > 0;
     }
 
     /**
      * Get affected rows
-     *
-     * @return int
      */
-    public function getAffectedRows()
+    public function getAffectedRows(): int
     {
         return pg_affected_rows($this->resource);
     }
@@ -183,10 +166,8 @@ class Result implements ResultInterface
 
     /**
      * Get field count
-     *
-     * @return int
      */
-    public function getFieldCount()
+    public function getFieldCount(): int
     {
         return pg_num_fields($this->resource);
     }

@@ -2,15 +2,15 @@
 
 namespace PhpDb\Adapter\Pgsql\Platform;
 
+use PDO;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\Pgsql;
 use PhpDb\Adapter\Exception;
-use PhpDb\Adapter\Platform\AbstractPlatform;
 use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
 use PhpDb\Adapter\Pgsql\Driver\Pdo\Pdo as DriverPdo;
+use PhpDb\Adapter\Platform\AbstractPlatform;
 use PhpDb\Sql\Platform\Platform as SqlPlatformDecorator;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
-use PDO;
 
 use function get_resource_type;
 use function implode;
@@ -37,10 +37,7 @@ class Postgresql extends AbstractPlatform
         'pgsql link persistent',
     ];
 
-    /**
-     * @param null|Pgsql\Pgsql|DriverPdo|PDO $driver
-     */
-    public function __construct(PDO|Pgsql\Pgsql|DriverPdo $driver = null)
+    public function __construct(PDO|Pgsql\Pgsql|DriverPdo|null $driver = null)
     {
         if ($driver) {
             $this->setDriver($driver);
@@ -100,6 +97,7 @@ class Postgresql extends AbstractPlatform
 
     /**
      * {@inheritDoc}
+     *
      * @param scalar $value
      * @return string
      */
@@ -116,7 +114,6 @@ class Postgresql extends AbstractPlatform
 
     /**
      * @param string $value
-     * @return string|null
      */
     protected function quoteViaDriver($value): ?string
     {

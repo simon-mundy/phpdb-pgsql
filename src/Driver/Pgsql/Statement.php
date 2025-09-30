@@ -6,8 +6,8 @@ use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Exception;
 use PhpDb\Adapter\ParameterContainer;
-use PhpDb\Adapter\Profiler;
 use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
+use PhpDb\Adapter\Profiler;
 
 use function get_resource_type;
 use function is_array;
@@ -20,16 +20,12 @@ use function sprintf;
 
 class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 {
-    /** @var int */
     protected static int $statementIndex = 0;
 
-    /** @var string */
     protected string $statementName = '';
 
-    /** @var Pgsql */
     protected Pgsql $driver;
 
-    /** @var Profiler\ProfilerInterface */
     protected Profiler\ProfilerInterface $profiler;
 
     /** @var resource */
@@ -38,10 +34,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /** @var resource */
     protected $resource;
 
-    /** @var string */
     protected string $sql;
 
-    /** @var ParameterContainer */
     protected ParameterContainer $parameterContainer;
 
     /**
@@ -62,9 +56,6 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
         return $this;
     }
 
-    /**
-     * @return null|Profiler\ProfilerInterface
-     */
     public function getProfiler(): ?Profiler\ProfilerInterface
     {
         return $this->profiler;
@@ -74,7 +65,6 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Initialize
      *
      * @param  resource $pgsql
-     * @return void
      * @throws Exception\RuntimeException For invalid or missing postgresql connection.
      */
     public function initialize($pgsql): void
@@ -122,8 +112,6 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * Get sql
-     *
-     * @return string
      */
     public function getSql(): ?string
     {
@@ -143,8 +131,6 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * Get parameter container
-     *
-     * @return ParameterContainer
      */
     public function getParameterContainer(): ParameterContainer
     {
@@ -176,8 +162,6 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
     /**
      * Is prepared
-     *
-     * @return bool
      */
     public function isPrepared(): bool
     {
@@ -187,11 +171,10 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /**
      * Execute
      *
-     * @param array|ParameterContainer $parameters
      * @throws Exception\InvalidQueryException
      * @return Result
      */
-    public function execute(ParameterContainer|array $parameters = null): ?ResultInterface
+    public function execute(ParameterContainer|array|null $parameters = null): ?ResultInterface
     {
         if (! $this->isPrepared()) {
             $this->prepare();
