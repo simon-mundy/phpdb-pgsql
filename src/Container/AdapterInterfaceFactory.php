@@ -14,7 +14,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
-class AdapterServiceFactory implements FactoryInterface
+class AdapterInterfaceFactory implements FactoryInterface
 {
     /**
      * Create db adapter service

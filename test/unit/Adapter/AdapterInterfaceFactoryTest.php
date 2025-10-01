@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LaminasTest\Db\Pgsql;
+namespace PhpDbTest\Pgsql;
 
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Override;
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\Pgsql\ConfigProvider;
-use PhpDb\Adapter\Pgsql\Container\AdapterServiceFactory;
+use PhpDb\Adapter\Pgsql\Container\AdapterInterfaceFactory;
 use PhpDb\Adapter\Profiler\Profiler;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
 use PHPUnit\Framework\Attributes\CoversMethod;
@@ -19,10 +19,10 @@ use Psr\Container\NotFoundExceptionInterface;
 
 use function extension_loaded;
 
-#[CoversMethod(AdapterServiceFactory::class, '__invoke')]
-final class AdapterServiceFactoryTest extends TestCase
+#[CoversMethod(AdapterInterfaceFactory::class, '__invoke')]
+final class AdapterInterfaceFactoryTest extends TestCase
 {
-    private AdapterServiceFactory $factory;
+    private AdapterInterfaceFactory $factory;
 
     protected function createServiceManager(array $dbConfig): ServiceLocatorInterface
     {
@@ -39,7 +39,7 @@ final class AdapterServiceFactoryTest extends TestCase
             $this->markTestSkipped('Adapter factory tests require pdo_sqlite');
         }
 
-        $this->factory = new AdapterServiceFactory();
+        $this->factory = new AdapterInterfaceFactory();
     }
 
     /**

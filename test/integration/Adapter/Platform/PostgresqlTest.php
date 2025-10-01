@@ -1,6 +1,6 @@
 <?php
 
-namespace LaminasIntegrationTest\Db\Adapter\Platform;
+namespace PhpDbIntegrationTest\Adapter\Platform;
 
 use Override;
 use PhpDb\Adapter\Driver\Pdo;

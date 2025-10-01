@@ -1,8 +1,8 @@
 <?php
 
-namespace LaminasIntegrationTest\Db\Adapter\Driver\Pdo\Postgresql;
+namespace PhpDbIntegrationTest\Adapter\Driver\Pdo\Postgresql;
 
-use LaminasIntegrationTest\Db\Adapter\Driver\Pdo\AdapterTrait as BaseAdapterTrait;
+use PhpDbIntegrationTest\Adapter\Driver\Pdo\AdapterTrait as BaseAdapterTrait;
 use PhpDb\Sql\TableIdentifier;
 use PhpDb\TableGateway\Feature\FeatureSet;
 use PhpDb\TableGateway\Feature\SequenceFeature;

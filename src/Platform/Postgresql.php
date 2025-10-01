@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpDb\Adapter\Pgsql\Platform;
 
 use PDO;
+use PgSql\Connection as PgSqlConnection;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\Pgsql;
 use PhpDb\Adapter\Exception;
-use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
 use PhpDb\Adapter\Pgsql\Driver\Pdo\Pdo as DriverPdo;
 use PhpDb\Adapter\Platform\AbstractPlatform;
 use PhpDb\Sql\Platform\Platform as SqlPlatformDecorator;

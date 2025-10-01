@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
 
 use PhpDb\Adapter\Exception\InvalidArgumentException;

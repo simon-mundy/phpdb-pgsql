@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaminasTest\Db\Pgsql;
+namespace PhpDbTest\Pgsql;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use PhpDb\Adapter\AdapterInterface;
