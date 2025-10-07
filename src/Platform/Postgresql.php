@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Pgsql\Platform;
 
+use Override;
 use PDO;
 use PgSql\Connection as PgSqlConnection;
+use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Adapter\Driver\Pgsql;
+use PhpDb\Adapter\Driver\PdoDriverInterface;
+use PhpDb\Adapter\Driver\Pgsql\Pgsql;
 use PhpDb\Adapter\Exception;
-use PhpDb\Adapter\Pgsql\Driver\Pdo\Pdo as DriverPdo;
+use PhpDb\Adapter\Pgsql\Driver\Pdo\Pdo as PdoDriver;
 use PhpDb\Adapter\Platform\AbstractPlatform;
 use PhpDb\Sql\Platform\Platform as SqlPlatformDecorator;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
@@ -23,6 +26,7 @@ use function str_replace;
 
 class Postgresql extends AbstractPlatform
 {
+    public final const PLATFORM_NAME = 'PostgreSQL';
     /**
      * Overrides value from AbstractPlatform to use proper escaping for Postgres
      *
@@ -30,58 +34,31 @@ class Postgresql extends AbstractPlatform
      */
     protected $quoteIdentifierTo = '""';
 
-    /** @var null|resource|PDO|DriverPdo|Pgsql\Pgsql */
-    protected $driver;
-
     /** @var string[] */
     private $knownPgsqlResources = [
         'pgsql link',
         'pgsql link persistent',
     ];
 
-    public function __construct(PDO|Pgsql\Pgsql|DriverPdo|null $driver = null)
-    {
-        if ($driver) {
-            $this->setDriver($driver);
-        }
-    }
-
-    /**
-     * @param Pgsql\Pgsql|DriverPdo|resource|PDO $driver
-     * @throws Exception\InvalidArgumentException
-     * @return $this Provides a fluent interface
-     */
-    public function setDriver($driver): static
-    {
-        if (
-            $driver instanceof Pgsql\Pgsql
-            || ($driver instanceof DriverPdo && $driver->getDatabasePlatformName() === 'Postgresql')
-            || $driver instanceof PgSqlConnection // PHP 8.1+
-            || (is_resource($driver) && in_array(get_resource_type($driver), $this->knownPgsqlResources, true))
-            || ($driver instanceof PDO && $driver->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql')
-        ) {
-            $this->driver = $driver;
-
-            return $this;
-        }
-
-        throw new Exception\InvalidArgumentException(
-            '$driver must be a Pgsql or Postgresql PDO PhpDb\Adapter\Driver, pgsql link resource'
-            . ' or Postgresql PDO instance'
-        );
+    public function __construct(
+        //private readonly PDO|Pgsql|PdoDriver $driver
+        private readonly DriverInterface|PdoDriverInterface|PDO $driver,
+    ) {
     }
 
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function getName(): string
     {
-        return 'PostgreSQL';
+        return self::PLATFORM_NAME;
     }
 
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function quoteIdentifierChain($identifierChain): string
     {
         return '"' . implode('"."', (array) str_replace('"', '""', $identifierChain)) . '"';
@@ -90,6 +67,7 @@ class Postgresql extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function quoteValue($value): string
     {
         $quotedViaDriverValue = $this->quoteViaDriver($value);
@@ -103,6 +81,7 @@ class Postgresql extends AbstractPlatform
      * @param scalar $value
      * @return string
      */
+    #[Override]
     public function quoteTrustedValue($value): string
     {
         $quotedViaDriverValue = $this->quoteViaDriver($value);
@@ -134,8 +113,9 @@ class Postgresql extends AbstractPlatform
         return null;
     }
 
+    #[Override]
     public function getSqlPlatformDecorator(): PlatformDecoratorInterface
     {
-        return new SqlPlatformDecorator($this->driver);
+        return new SqlPlatformDecorator($this);
     }
 }

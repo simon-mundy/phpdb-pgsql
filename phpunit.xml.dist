@@ -14,24 +14,18 @@
          failOnDeprecation="true"
          failOnWarning="true">
     <testsuites>
-        <testsuite name="unit">
-            <directory>test/unit</directory>
+        <testsuite name="unit test">
+            <directory>./test/unit</directory>
         </testsuite>
-        <!--
-        <testsuite name="integration">
-            <directory>test/integration</directory>
+
+        <testsuite name="integration test">
+            <directory>./test/integration</directory>
         </testsuite>
-        -->
+
     </testsuites>
-    <coverage pathCoverage="false" disableCodeCoverageIgnore="true">
-    </coverage>
     <source>
         <include>
-            <directory suffix=".php">src</directory>
+            <directory suffix=".php">./src</directory>
         </include>
-        <exclude>
-            <directory suffix=".php">test/config</directory>
-            <directory suffix=".php">test/resource</directory>
-        </exclude>
     </source>
 </phpunit>

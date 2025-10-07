@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4a3049b922cefbc90e1f498dd0fdca74",
+    "content-hash": "93b90a40dd4fe8c39502da74c4585c56",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -259,22 +259,22 @@
         },
         {
             "name": "php-db/phpdb",
-            "version": "0.1.1",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-db/phpdb.git",
-                "reference": "f671eabd951cd5da927ea814c8d0f83bb16247e0"
+                "reference": "d221b024cb3aea77992f41a962913918301dc92e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-db/phpdb/zipball/f671eabd951cd5da927ea814c8d0f83bb16247e0",
-                "reference": "f671eabd951cd5da927ea814c8d0f83bb16247e0",
+                "url": "https://api.github.com/repos/php-db/phpdb/zipball/d221b024cb3aea77992f41a962913918301dc92e",
+                "reference": "d221b024cb3aea77992f41a962913918301dc92e",
                 "shasum": ""
             },
             "require": {
                 "laminas/laminas-servicemanager": "^4.0.0",
                 "laminas/laminas-stdlib": "^3.20.0",
-                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0"
             },
             "conflict": {
                 "laminas/laminas-db": "*",
@@ -283,10 +283,10 @@
             "require-dev": {
                 "laminas/laminas-coding-standard": "^3.0.1",
                 "laminas/laminas-eventmanager": "^3.14.0",
-                "phpunit/phpunit": "^11.5.12",
-                "psalm/plugin-phpunit": "^0.19.2",
-                "rector/rector": "^2.0",
-                "vimeo/psalm": "^6.8.8"
+                "phpstan/phpstan": "^2.1",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^11.5.15",
+                "rector/rector": "^2.0"
             },
             "suggest": {
                 "laminas/laminas-eventmanager": "Laminas\\EventManager component",
@@ -295,7 +295,7 @@
             "type": "library",
             "extra": {
                 "laminas": {
-                    "config-provider": "PhpDb\\Container\\ConfigProvider"
+                    "config-provider": "PhpDb\\ConfigProvider"
                 }
             },
             "autoload": {
@@ -321,7 +321,7 @@
                 "issues": "https://github.com/php-db/phpdb/issues",
                 "source": "https://github.com/php-db/phpdb"
             },
-            "time": "2025-09-15T22:14:40+00:00"
+            "time": "2025-10-07T08:36:48+00:00"
         },
         {
             "name": "psr/container",
@@ -754,16 +754,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.29",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan-phar-composer-source.git",
-                "reference": "git"
-            },
+            "version": "2.1.30",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d618573eed4a1b6b75e37b2e0b65ac65c885d88e",
-                "reference": "d618573eed4a1b6b75e37b2e0b65ac65c885d88e",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a4a7f159927983dd4f7c8020ed227d80b7f39d7d",
+                "reference": "a4a7f159927983dd4f7c8020ed227d80b7f39d7d",
                 "shasum": ""
             },
             "require": {
@@ -808,7 +803,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-25T06:58:18+00:00"
+            "time": "2025-10-02T16:07:52+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",
