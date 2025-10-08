@@ -28,4 +28,11 @@
             <directory suffix=".php">./src</directory>
         </include>
     </source>
+    <php>
+        <env name="TESTS_PHPDB_ADAPTER_DRIVER_PGSQL" value="true"/>
+        <env name="TESTS_PHPDB_ADAPTER_DRIVER_PGSQL_HOSTNAME" value="postgresql"/>
+        <env name="TESTS_PHPDB_ADAPTER_DRIVER_PGSQL_USERNAME" value="postgres"/>
+        <env name="TESTS_PHPDB_ADAPTER_DRIVER_PGSQL_PASSWORD" value="postgres"/>
+        <env name="TESTS_PHPDB_ADAPTER_DRIVER_PGSQL_DATABASE" value="phpdb_test"/>
+    </php>
 </phpunit>
