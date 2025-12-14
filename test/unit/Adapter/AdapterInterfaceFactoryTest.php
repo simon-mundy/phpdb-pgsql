@@ -1,0 +1,116 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhpDbTest\Pgsql;
+
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\ServiceManager;
+use Override;
+use PhpDb\Adapter\Adapter;
+use PhpDb\Adapter\Pgsql\ConfigProvider;
+use PhpDb\Adapter\Pgsql\Container\AdapterInterfaceFactory;
+use PhpDb\Adapter\Profiler\Profiler;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+
+use function extension_loaded;
+
+#[CoversMethod(AdapterInterfaceFactory::class, '__invoke')]
+final class AdapterInterfaceFactoryTest extends TestCase
+{
+    private AdapterInterfaceFactory $factory;
+
+    protected function createServiceManager(array $dbConfig): ServiceLocatorInterface
+    {
+        $config                       = (new ConfigProvider())->getDependencies();
+        $config['services']['config'] = $dbConfig;
+
+        return new ServiceManager($config);
+    }
+
+    #[Override]
+    protected function setUp(): void
+    {
+        if (! extension_loaded('pdo_sqlite')) {
+            $this->markTestSkipped('Adapter factory tests require pdo_sqlite');
+        }
+
+        $this->factory = new AdapterInterfaceFactory();
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function testV3FactoryReturnsDefaultAdapter(): void
+    {
+        $this->expectNotToPerformAssertions();
+
+        $services = $this->createServiceManager([
+            'db' => [
+                'driver'   => 'Pdo_Pgsql',
+                'database' => ':memory:',
+            ],
+        ]);
+
+        $this->factory->__invoke($services, Adapter::class);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function testV3FactoryReturnsDefaultAdapterWithDefaultProfiler(): void
+    {
+        $services = $this->createServiceManager([
+            'db' => [
+                'driver'   => 'Pdo_Pgsql',
+                'database' => ':memory:',
+                'profiler' => true,
+            ],
+        ]);
+
+        $adapter = $this->factory->__invoke($services, Adapter::class);
+        self::assertInstanceOf(ProfilerInterface::class, $adapter->getProfiler());
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function testV3FactoryReturnsDefaultAdapterWithProfilerClassname(): void
+    {
+        $services = $this->createServiceManager([
+            'db' => [
+                'driver'   => 'Pdo_Pgsql',
+                'database' => ':memory:',
+                'profiler' => Profiler::class,
+            ],
+        ]);
+
+        $adapter = $this->factory->__invoke($services, Adapter::class);
+        self::assertInstanceOf(ProfilerInterface::class, $adapter->getProfiler());
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function testV3FactoryReturnsDefaultAdapterWithProfilerInstance(): void
+    {
+        $services = $this->createServiceManager([
+            'db' => [
+                'driver'   => 'Pdo_Pgsql',
+                'database' => ':memory:',
+                'profiler' => $this->getMockBuilder(ProfilerInterface::class)->getMock(),
+            ],
+        ]);
+
+        $adapter = $this->factory->__invoke($services, Adapter::class);
+        self::assertInstanceOf(ProfilerInterface::class, $adapter->getProfiler());
+    }
+}

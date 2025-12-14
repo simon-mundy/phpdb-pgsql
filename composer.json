@@ -1,0 +1,75 @@
+{
+    "name": "php-db/phpdb-adapter-pgsql",
+    "description": "PostgreSQL support for php-db",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "php-db",
+        "pgsql",
+        "db"
+    ],
+    "homepage": "https://php-db.dev",
+    "support": {
+        "issues": "https://github.com/php-db/phpdb-adapter-pgsql/issues",
+        "source": "https://github.com/php-db/phpdb-adapter-pgsql",
+        "forum": "https://github.com/php-db/phpdb-adapter-pgsql/discussions"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "8.2.99"
+        },
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "extra": {
+        "laminas": {
+            "config-provider": "PhpDb\\Adapter\\Pgsql\\ConfigProvider"
+        }
+    },
+    "require": {
+        "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+        "php-db/phpdb": "^0.2.1"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "^3.0.1",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^11.5.15"
+    },
+    "suggest": {
+        "ext-pdo": "*",
+        "ext-pdo_pgsql": "*",
+        "ext-pgsql": "*",
+        "laminas/laminas-servicemanager": "Laminas\\ServiceManager component"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhpDb\\Adapter\\Pgsql\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpDbTest\\Adapter\\Pgsql\\": "test/unit/",
+            "PhpDbIntegrationTest\\Adapter\\Pgsql\\": "test/integration/"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@static-analysis",
+            "@test",
+            "@test-integration"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit --colors=always --testsuite \"unit test\"",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "test-integration": "phpunit --colors=always --testsuite \"integration test\"",
+        "static-analysis": "vendor/bin/phpstan analyse --memory-limit=256M",
+        "sa-generate-baseline": "vendor/bin/phpstan analyse --memory-limit=256M --generate-baseline",
+        "upload-coverage": "coveralls -v"
+    }
+}

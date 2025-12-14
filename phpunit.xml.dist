@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.4/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache"
+         requireCoverageMetadata="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         displayDetailsOnTestsThatTriggerNotices="true"
+         displayDetailsOnTestsThatTriggerErrors="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+         displayDetailsOnSkippedTests="true"
+         failOnNotice="true"
+         failOnDeprecation="true"
+         failOnWarning="true">
+    <testsuites>
+        <testsuite name="unit test">
+            <directory>./test/unit</directory>
+        </testsuite>
+
+        <testsuite name="integration test">
+            <directory>./test/integration</directory>
+        </testsuite>
+
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </source>
+    <php>
+        <env name="TESTS_PHPDB_ADAPTER_DRIVER_PGSQL" value="true"/>
+        <env name="TESTS_PHPDB_ADAPTER_DRIVER_PGSQL_HOSTNAME" value="postgresql"/>
+        <env name="TESTS_PHPDB_ADAPTER_DRIVER_PGSQL_USERNAME" value="postgres"/>
+        <env name="TESTS_PHPDB_ADAPTER_DRIVER_PGSQL_PASSWORD" value="postgres"/>
+        <env name="TESTS_PHPDB_ADAPTER_DRIVER_PGSQL_DATABASE" value="phpdb_test"/>
+    </php>
+</phpunit>
