@@ -2,18 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
+namespace PhpDb\Adapter\Pgsql;
 
 use Override;
+use PgSql\Connection as PgSqlConnection;
+use PgSql\Result as PgSqlResult;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Exception;
-use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
-use PhpDb\Adapter\Pgsql\Driver\DatabasePlatformNameTrait;
-use PhpDb\Adapter\Pgsql\Result as PgSqlResult;
 use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
 
@@ -22,7 +21,7 @@ use function array_merge;
 use function extension_loaded;
 use function is_string;
 
-class Pgsql implements DriverInterface, ProfilerAwareInterface
+class Driver implements DriverInterface, ProfilerAwareInterface
 {
     use DatabasePlatformNameTrait;
 
@@ -53,8 +52,9 @@ class Pgsql implements DriverInterface, ProfilerAwareInterface
     }
 
     #[Override]
-    public function setProfiler(ProfilerInterface $profiler): ProfilerAwareInterface
-    {
+    public function setProfiler(
+        ProfilerInterface $profiler
+    ): DriverInterface&ProfilerAwareInterface {
         $this->profiler = $profiler;
         if ($this->connection instanceof ProfilerAwareInterface) {
             $this->connection->setProfiler($profiler);
@@ -77,7 +77,7 @@ class Pgsql implements DriverInterface, ProfilerAwareInterface
     {
         if (! extension_loaded('pgsql')) {
             throw new Exception\RuntimeException(
-                'The PostgreSQL (pgsql) extension is required for this adapter but the extension is not loaded'
+                'The PostgreSQL (pgsql) extension is required for this Driver but the extension is not loaded'
             );
         }
         return true;
@@ -115,7 +115,7 @@ class Pgsql implements DriverInterface, ProfilerAwareInterface
     /**
      * Create result
      *
-     * @param resource|PgSqlResult|PgSqlConnection $resource
+     * @param PgSqlResult $resource
      */
     #[Override]
     public function createResult($resource): ResultInterface&Result

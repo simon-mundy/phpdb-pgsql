@@ -1,8 +1,9 @@
 <?php
 
-namespace PhpDbIntegrationTest\Adapter\Driver\Pdo\Postgresql;
+declare(strict_types=1);
 
-use PhpDbIntegrationTest\Adapter\Driver\Pdo\AdapterTrait as BaseAdapterTrait;
+namespace PhpDbIntegrationTest\Adapter\Pgsql\Driver\Pdo;
+
 use PhpDb\Sql\TableIdentifier;
 use PhpDb\TableGateway\Feature\FeatureSet;
 use PhpDb\TableGateway\Feature\SequenceFeature;
@@ -11,8 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 final class TableGatewayTest extends TestCase
 {
-    use AdapterTrait;
-    use BaseAdapterTrait;
+    use SetupTrait;
 
     public function testLastInsertValue(): void
     {

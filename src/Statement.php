@@ -2,151 +2,112 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
+namespace PhpDb\Adapter\Pgsql;
 
+use Override;
+use PgSql\Connection as PgSqlConnection;
+use PgSql\Result as PgSqlResult;
+use PhpDb\Adapter\Driver\DriverAwareInterface;
+use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Exception;
 use PhpDb\Adapter\ParameterContainer;
-use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
-use PhpDb\Adapter\Profiler;
+use PhpDb\Adapter\Profiler\ProfilerAwareInterface;
+use PhpDb\Adapter\Profiler\ProfilerInterface;
 
-use function get_resource_type;
 use function is_array;
-use function is_resource;
 use function pg_execute;
 use function pg_last_error;
 use function pg_prepare;
 use function preg_replace_callback;
-use function sprintf;
 
-class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
+class Statement implements
+    StatementInterface,
+    DriverAwareInterface,
+    ProfilerAwareInterface
 {
     protected static int $statementIndex = 0;
 
-    protected string $statementName = '';
+    protected string $statementName = 'statement';
 
-    protected Pgsql $driver;
+    protected Driver $driver;
 
-    protected Profiler\ProfilerInterface $profiler;
+    protected ProfilerInterface $profiler;
 
-    /** @var resource */
-    protected $pgsql;
+    protected PgSqlConnection $pgsql;
 
-    /** @var resource */
-    protected $resource;
+    protected PgSqlResult|false $resource;
 
     protected string $sql;
 
     protected ParameterContainer $parameterContainer;
 
-    /**
-     * @return $this Provides a fluent interface
-     */
-    public function setDriver(Pgsql $driver): static
-    {
+    #[Override]
+    public function setDriver(
+        DriverInterface $driver
+    ): StatementInterface&DriverAwareInterface&ProfilerAwareInterface {
         $this->driver = $driver;
         return $this;
     }
 
-    /**
-     * @return $this Provides a fluent interface
-     */
-    public function setProfiler(Profiler\ProfilerInterface $profiler): static
-    {
+    #[Override]
+    public function setProfiler(
+        ProfilerInterface $profiler
+    ): StatementInterface&DriverAwareInterface&ProfilerAwareInterface {
         $this->profiler = $profiler;
         return $this;
     }
 
-    public function getProfiler(): ?Profiler\ProfilerInterface
+    public function getProfiler(): (StatementInterface&ProfilerInterface)|null
     {
         return $this->profiler;
     }
 
-    /**
-     * Initialize
-     *
-     * @param  resource $pgsql
-     * @throws Exception\RuntimeException For invalid or missing postgresql connection.
-     */
-    public function initialize($pgsql): void
+    public function initialize(PgSqlConnection $pgsql): void
     {
-        if (
-            ! $pgsql instanceof PgSqlConnection
-            && (
-                ! is_resource($pgsql)
-                || 'pgsql link' !== get_resource_type($pgsql)
-            )
-        ) {
-            throw new Exception\RuntimeException(sprintf(
-                '%s: Invalid or missing postgresql connection; received "%s"',
-                __METHOD__,
-                get_resource_type($pgsql)
-            ));
-        }
-
         $this->pgsql = $pgsql;
     }
 
-    /**
-     * Get resource
-     *
-     * @todo Implement this method
-     * phpcs:ignore Squiz.Commenting.FunctionComment.InvalidNoReturn
-     * @return resource
-     */
-    public function getResource()
+    #[Override]
+    public function getResource(): PgSqlResult|false
     {
         return $this->resource;
     }
 
-    /**
-     * Set sql
-     *
-     * @param string $sql
-     * @return $this Provides a fluent interface
-     */
-    public function setSql($sql): static
-    {
+    #[Override]
+    public function setSql(
+        $sql
+    ): StatementInterface&DriverAwareInterface&ProfilerAwareInterface {
         $this->sql = $sql;
         return $this;
     }
 
-    /**
-     * Get sql
-     */
+    #[Override]
     public function getSql(): ?string
     {
         return $this->sql;
     }
 
-    /**
-     * Set parameter container
-     *
-     * @return $this Provides a fluent interface
-     */
-    public function setParameterContainer(ParameterContainer $parameterContainer): static
-    {
+    #[Override]
+    public function setParameterContainer(
+        ParameterContainer $parameterContainer
+    ): StatementInterface&DriverAwareInterface&ProfilerAwareInterface {
         $this->parameterContainer = $parameterContainer;
         return $this;
     }
 
-    /**
-     * Get parameter container
-     */
+    #[Override]
     public function getParameterContainer(): ParameterContainer
     {
         return $this->parameterContainer;
     }
 
-    /**
-     * Prepare
-     *
-     * @param string $sql
-     */
-    public function prepare($sql = null): StatementInterface
-    {
-        $sql = $sql ?: $this->sql;
+    #[Override]
+    public function prepare(
+        ?string $sql = null
+    ): StatementInterface&DriverAwareInterface&ProfilerAwareInterface {
+        $sql = $sql ?? $this->sql;
 
         $pCount = 1;
         $sql    = preg_replace_callback(
@@ -158,13 +119,12 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
         );
 
         $this->sql           = $sql;
-        $this->statementName = 'statement' . ++static::$statementIndex;
+        $this->statementName .= ++static::$statementIndex;
         $this->resource      = pg_prepare($this->pgsql, $this->statementName, $sql);
+        return $this;
     }
 
-    /**
-     * Is prepared
-     */
+    #[Override]
     public function isPrepared(): bool
     {
         return isset($this->resource);
@@ -174,8 +134,8 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
      * Execute
      *
      * @throws Exception\InvalidQueryException
-     * @return Result
      */
+    #[Override]
     public function execute(ParameterContainer|array|null $parameters = null): ?ResultInterface
     {
         if (! $this->isPrepared()) {

@@ -12,7 +12,7 @@ use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\ParameterContainer;
-use PhpDb\Adapter\Pgsql\Driver\Pdo\Pdo;
+use PhpDb\Adapter\Pgsql\Driver\Pdo\Driver;
 use PhpDb\Adapter\Pgsql\Platform\Postgresql as PgsqlPlatform;
 use PhpDb\Adapter\Profiler;
 use PhpDb\ResultSet\ResultSet;

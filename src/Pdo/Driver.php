@@ -11,7 +11,7 @@ use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Pgsql\Driver\DatabasePlatformNameTrait;
 
-class Pdo extends AbstractPdo
+class Driver extends AbstractPdo
 {
     use DatabasePlatformNameTrait;
 

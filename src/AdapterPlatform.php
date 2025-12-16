@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Platform;
+namespace PhpDb\Adapter\Pgsql;
 
 use Override;
 use PDO;
@@ -12,7 +12,7 @@ use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Driver\Pgsql\Pgsql;
 use PhpDb\Adapter\Exception;
-use PhpDb\Adapter\Pgsql\Driver\Pdo\Pdo as PdoDriver;
+use PhpDb\Adapter\Pgsql\Driver\Pdo\Driver as PdoDriver;
 use PhpDb\Adapter\Platform\AbstractPlatform;
 use PhpDb\Sql\Platform\Platform as SqlPlatformDecorator;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
@@ -24,7 +24,7 @@ use function is_resource;
 use function pg_escape_string;
 use function str_replace;
 
-class Postgresql extends AbstractPlatform
+class AdapterPlatform extends AbstractPlatform
 {
     public final const PLATFORM_NAME = 'PostgreSQL';
     /**
@@ -41,7 +41,6 @@ class Postgresql extends AbstractPlatform
     ];
 
     public function __construct(
-        //private readonly PDO|Pgsql|PdoDriver $driver
         private readonly DriverInterface|PdoDriverInterface|PDO $driver,
     ) {
     }

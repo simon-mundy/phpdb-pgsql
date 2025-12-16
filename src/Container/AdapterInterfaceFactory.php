@@ -12,7 +12,6 @@ use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
-use PhpDb\Container\AdapterManager;
 use PhpDb\ResultSet\ResultSetInterface;
 use Psr\Container\ContainerInterface;
 
@@ -20,25 +19,74 @@ use function sprintf;
 
 class AdapterInterfaceFactory
 {
-    /**
-     * Create db adapter service
-     *
-     * @param array|null         $options
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
-    public function __invoke(ContainerInterface $container): AdapterInterface {
-        $resultSetPrototype = $container->has(ResultSetInterface::class)
-            ? $container->get(ResultSetInterface::class)
+    public function __invoke(ContainerInterface $container): AdapterInterface
+    {
+        if (! $container->has('config')) {
+            throw new ServiceNotFoundException(
+                sprintf(
+                    'Could not find service "config" in container %s',
+                    $container::class
+                )
+            );
+        }
+
+        /** @var array $config */
+        $config = $container->get('config');
+
+        /** @var array $dbConfig */
+        $dbConfig = $config['db'] ?? [];
+
+        if (! isset($dbConfig['driver'])) {
+            throw new RuntimeException(
+                'Database configuration must contain a "driver" key'
+            );
+        }
+
+        /** @var string $driver */
+        $driver = $dbConfig['driver'];
+        if (! $container->has($driver)) {
+            throw new ServiceNotFoundException(
+                sprintf(
+                    'Could not find database driver service "%s" in container %s',
+                    $driver,
+                    $container::class
+                )
+            );
+        }
+        /** @var DriverInterface|PdoDriverInterface $driverInstance */
+        $driverInstance = $container->get($driver);
+
+        if (! $container->has(PlatformInterface::class)) {
+            throw new ServiceNotFoundException(
+                sprintf(
+                    'Could not find service "%s" in container %s',
+                    PlatformInterface::class,
+                    $container::class
+                )
+            );
+        }
+
+        /** @var PlatformInterface $adapterPlatform */
+        $adapterPlatform = $container->get(PlatformInterface::class);
+
+        /** @var ProfilerInterface|null $profilerInstanceOrNull */
+        $profilerInstanceOrNull = $container->has(ProfilerInterface::class)
+            ? $container->get(ProfilerInterface::class)
             : null;
 
-        $profiler = $container->get(ProfilerInterface::class);
+        if (! $container->has(ResultSetInterface::class)) {
+            return new Adapter(
+                driver: $driverInstance,
+                platform: $adapterPlatform,
+                profiler: $profilerInstanceOrNull
+            );
+        }
 
         return new Adapter(
-            $container->get(DriverInterface::class),
-            $container->get(Platform\Postgresql::class),
-            $resultSetPrototype,
-            $profiler
+            driver: $driverInstance,
+            platform: $adapterPlatform,
+            queryResultSetPrototype: $container->get(ResultSetInterface::class),
+            profiler: $profilerInstanceOrNull
         );
     }
 }

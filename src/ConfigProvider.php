@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Pgsql;
 
-use Laminas\ServiceManager\Factory\InvokableFactory;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Platform\PlatformInterface;
@@ -22,12 +21,12 @@ readonly class ConfigProvider
     {
         return [
             'aliases'   => [
-                PlatformInterface::class => Platform\Postgresql::class,
+                PlatformInterface::class => AdapterPlatform::class,
             ],
             'factories' => [
-                AdapterInterface::class    => Container\AdapterServiceFactory::class,
-                DriverInterface::class     => Container\PdoDriverInterfaceFactory::class,
-                Platform\Postgresql::class => InvokableFactory::class,
+                AdapterInterface::class => Container\AdapterInterfaceFactory::class,
+                DriverInterface::class  => Container\PdoDriverInterfaceFactory::class,
+                AdapterPlatform::class  => Container\PlatformInterfaceFactory::class,
             ],
         ];
     }

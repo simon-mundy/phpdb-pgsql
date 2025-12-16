@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Driver\Pgsql;
+namespace PhpDb\Adapter\Pgsql;
 
+use Override;
 use PgSql\Connection as PgSqlConnection;
 use PhpDb\Adapter\Driver\AbstractConnection;
 use PhpDb\Adapter\Driver\ConnectionInterface;
@@ -16,7 +17,7 @@ use PhpDb\ResultSet\ResultSetInterface;
 use function array_filter;
 use function http_build_query;
 use function is_array;
-use function is_resource;
+use function pg_close;
 use function pg_connect;
 use function pg_fetch_result;
 use function pg_last_error;
@@ -32,42 +33,45 @@ use const PGSQL_CONNECT_FORCE_NEW;
 
 class Connection extends AbstractConnection implements DriverAwareInterface
 {
-    /** @var Pgsql */
-    protected $driver;
+    protected Driver $driver;
+
+    protected PgSqlConnection $resource;
 
     /** @var null|int PostgreSQL connection type */
     protected ?int $type = null;
 
-    public function __construct(PgSqlConnection|array|null $connectionInfo = null)
+    public function __construct(PgSqlConnection|array $connectionInfo)
     {
         if (is_array($connectionInfo)) {
             $this->setConnectionParameters($connectionInfo);
-        } elseif ($connectionInfo instanceof PgSqlConnection || is_resource($connectionInfo)) {
+        } else {
             $this->setResource($connectionInfo);
         }
     }
 
-    public function setResource(PgSqlConnection $resource): ConnectionInterface
-    {
+    public function setResource(
+        PgSqlConnection $resource
+    ): ConnectionInterface&DriverAwareInterface {
         $this->resource = $resource;
 
         return $this;
     }
 
-    /**
-     * old param type hint Pgsql $driver
-     */
-    public function setDriver(DriverInterface $driver): DriverAwareInterface
+    #[Override]
+    public function getResource(): ?PgSqlConnection
     {
+        return $this->resource;
+    }
+
+    public function setDriver(
+        DriverInterface $driver
+    ): ConnectionInterface&DriverAwareInterface {
         $this->driver = $driver;
 
         return $this;
     }
 
-    /**
-     * @return $this Provides a fluent interface
-     */
-    public function setType(?int $type): static
+    public function setType(?int $type): ConnectionInterface&DriverAwareInterface
     {
         $invalidConectionType = $type !== PGSQL_CONNECT_FORCE_NEW;
         if ($invalidConectionType) {
@@ -80,12 +84,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return null|string
-     */
-    public function getCurrentSchema(): bool|string
+    public function getCurrentSchema(): string|false
     {
         if (! $this->isConnected()) {
             $this->connect();
@@ -157,7 +156,6 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      */
     public function disconnect(): static
     {
-        // phpcs:ignore SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFallbackGlobalName
         pg_close($this->resource);
 
         return $this;
@@ -269,8 +267,32 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      */
     private function getConnectionString(): string
     {
-        $connectionParameters = array_filter((new PgsqlConfig())($this->connectionParameters));
+        $parameters = $this->connectionParameters;
+        $conn = [];
+        foreach ($parameters as $name => $value) {
+            $name = match (strtolower($name)) {
+                'host', 'hostname'                   => 'host',
+                'user', 'username'                   => 'user',
+                'password', 'passwd', 'pw'           => 'password',
+                'database', 'dbname', 'db', 'schema' => 'dbname',
+                'port'                               => 'port',
+                'socket'                             => 'socket',
+                default                              => throw new Exception\InvalidArgumentException(
+                    'Connection parameter "' . $name . '"' . ' is not valid for Pgsql adapter'
+                ),
+            };
+            if ($name === 'port' && $value !== null) {
+                $value = (int) $value;
+            }
+            $conn[$name] = $value;
+        }
 
-        return urldecode(http_build_query($connectionParameters, '', ' '));
+        return urldecode(
+            http_build_query(
+                array_filter($conn),
+                 '',
+                  ' '
+                )
+            );
     }
 }
