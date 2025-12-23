@@ -1,12 +1,12 @@
 <?php
 
-namespace PhpDbIntegrationTest\Adapter\Platform;
+namespace PhpDbIntegrationTest\Adapter\Pgsql;
 
 use Override;
 use PhpDb\Adapter\Driver\Pdo;
+use PhpDb\Adapter\Pgsql\AdapterPlatform;
 use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
-use PhpDb\Adapter\Pgsql\Driver\Pgsql;
-use PhpDb\Adapter\Platform\Postgresql;
+use PhpDb\Adapter\Pgsql\Driver;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
@@ -17,7 +17,7 @@ use function pg_connect;
 
 #[Group('integration')]
 #[Group('integration-postgres')]
-final class PostgresqlTest extends TestCase
+final class AdapterPlatformTest extends TestCase
 {
     /** @var array<string, resource> */
     public array|\PDO $adapters = [];
@@ -25,23 +25,23 @@ final class PostgresqlTest extends TestCase
     #[Override]
     protected function setUp(): void
     {
-        if (! getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL')) {
+        if (! getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL')) {
             $this->markTestSkipped(self::class . ' integration tests are not enabled!');
         }
         if (extension_loaded('pgsql')) {
             $this->adapters['pgsql'] = pg_connect(
-                'host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL_HOSTNAME')
-                    . ' dbname=' . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL_DATABASE')
-                    . ' user=' . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL_USERNAME')
-                    . ' password=' . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL_PASSWORD')
+                'host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_HOSTNAME')
+                    . ' dbname=' . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_DATABASE')
+                    . ' user=' . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_USERNAME')
+                    . ' password=' . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_PASSWORD')
             );
         }
         if (extension_loaded('pdo')) {
             $this->adapters['pdo_pgsql'] = new \PDO(
-                'pgsql:host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL_HOSTNAME') . ';dbname='
-                . getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL_DATABASE'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL_USERNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_DRIVER_PGSQL_PASSWORD')
+                'pgsql:host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_HOSTNAME') . ';dbname='
+                . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_DATABASE'),
+                getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_USERNAME'),
+                getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_PASSWORD')
             );
         }
     }
@@ -60,11 +60,11 @@ final class PostgresqlTest extends TestCase
         ) {
             $this->markTestSkipped('Postgres (pgsql) not configured in unit test configuration file');
         }
-        $pgsql = new Postgresql($this->adapters['pgsql']);
+        $pgsql = new AdapterPlatform($this->adapters['pgsql']);
         $value = $pgsql->quoteValue('value');
         self::assertEquals('\'value\'', $value);
 
-        $pgsql = new Postgresql(new Pgsql\Pgsql(new Pgsql\Connection($this->adapters['pgsql'])));
+        $pgsql = new AdapterPlatform(new Driver(new PgSqlConnection($this->adapters['pgsql'])));
         $value = $pgsql->quoteValue('value');
         self::assertEquals('\'value\'', $value);
     }

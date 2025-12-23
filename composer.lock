@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a3f0f794e48b895f9ed9031ee29dcf78",
+    "content-hash": "5063e7391ca1bbb366715a6569a7af12",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -259,7 +259,7 @@
         },
         {
             "name": "php-db/phpdb",
-            "version": "0.4.0",
+            "version": "0.4.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-db/phpdb.git",
@@ -2600,7 +2600,10 @@
     "platform": {
         "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0"
     },
-    "platform-dev": {},
+    "platform-dev": {
+        "ext-pdo_pgsql": "*",
+        "ext-pgsql": "*"
+    },
     "platform-overrides": {
         "php": "8.2.99"
     },

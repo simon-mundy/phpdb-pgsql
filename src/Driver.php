@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PhpDb\Adapter\Pgsql;
 
 use Override;
-use PgSql\Connection as PgSqlConnection;
 use PgSql\Result as PgSqlResult;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverAwareInterface;

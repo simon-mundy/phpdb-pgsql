@@ -19,8 +19,10 @@ use function sprintf;
 
 class AdapterInterfaceFactory
 {
-    public function __invoke(ContainerInterface $container): AdapterInterface
-    {
+    public function __invoke(
+        ContainerInterface $container,
+        string $requestedName,
+    ): AdapterInterface {
         if (! $container->has('config')) {
             throw new ServiceNotFoundException(
                 sprintf(
@@ -34,7 +36,7 @@ class AdapterInterfaceFactory
         $config = $container->get('config');
 
         /** @var array $dbConfig */
-        $dbConfig = $config['db'] ?? [];
+        $dbConfig = $config[AdapterInterface::class][$requestedName] ?? $config[AdapterInterface::class] ?? [];
 
         if (! isset($dbConfig['driver'])) {
             throw new RuntimeException(
@@ -75,14 +77,14 @@ class AdapterInterfaceFactory
             : null;
 
         if (! $container->has(ResultSetInterface::class)) {
-            return new Adapter(
+            return new $requestedName(
                 driver: $driverInstance,
                 platform: $adapterPlatform,
                 profiler: $profilerInstanceOrNull
             );
         }
 
-        return new Adapter(
+        return new $requestedName(
             driver: $driverInstance,
             platform: $adapterPlatform,
             queryResultSetPrototype: $container->get(ResultSetInterface::class),

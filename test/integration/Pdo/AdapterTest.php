@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Pgsql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Adapter\Pgsql\Pdo;
 
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\ConnectionInterface;
-use PhpDb\Adapter\Pgsql\Driver\Pdo\Driver;
+use PhpDb\Adapter\Pgsql\Pdo\Driver;
 use PhpDb\Adapter\SchemaAwareInterface;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversMethod(ConnectionInterface::class, 'connect')]
 #[CoversMethod(ConnectionInterface::class, 'disconnect')]
 #[CoversMethod(ConnectionInterface::class, 'isConnected')]
-abstract class AbstractAdapterTestCase extends TestCase
+class AdapterTest extends TestCase
 {
     use SetupTrait;
 
@@ -45,7 +45,7 @@ abstract class AbstractAdapterTestCase extends TestCase
         /** @var AdapterInterface&Adapter $adapter */
         $adapter = $this->getAdapter([
             'db' => [
-                'driver' => Pdo::class,
+                'driver' => Driver::class,
             ],
         ]);
         $adapter->getDriver()->getConnection()->connect();

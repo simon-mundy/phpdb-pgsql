@@ -27,6 +27,7 @@ use function restore_error_handler;
 use function set_error_handler;
 use function sprintf;
 use function str_replace;
+use function strtolower;
 use function urldecode;
 
 use const PGSQL_CONNECT_FORCE_NEW;
@@ -35,7 +36,8 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 {
     protected Driver $driver;
 
-    protected PgSqlConnection $resource;
+    /** @var PgSqlConnection|null */
+    protected $resource;
 
     /** @var null|int PostgreSQL connection type */
     protected ?int $type = null;
@@ -268,7 +270,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     private function getConnectionString(): string
     {
         $parameters = $this->connectionParameters;
-        $conn = [];
+        $conn       = [];
         foreach ($parameters as $name => $value) {
             $name = match (strtolower($name)) {
                 'host', 'hostname'                   => 'host',
@@ -278,7 +280,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
                 'port'                               => 'port',
                 'socket'                             => 'socket',
                 default                              => throw new Exception\InvalidArgumentException(
-                    'Connection parameter "' . $name . '"' . ' is not valid for Pgsql adapter'
+                    'Connection parameter "' . $name . '" is not valid for Pgsql adapter'
                 ),
             };
             if ($name === 'port' && $value !== null) {
@@ -290,9 +292,9 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return urldecode(
             http_build_query(
                 array_filter($conn),
-                 '',
-                  ' '
-                )
-            );
+                '',
+                ' '
+            )
+        );
     }
 }

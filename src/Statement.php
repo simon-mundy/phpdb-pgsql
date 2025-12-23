@@ -27,6 +27,8 @@ class Statement implements
     DriverAwareInterface,
     ProfilerAwareInterface
 {
+    protected bool $bufferResults = false;
+
     protected static int $statementIndex = 0;
 
     protected string $statementName = 'statement';
@@ -41,7 +43,16 @@ class Statement implements
 
     protected string $sql;
 
-    protected ParameterContainer $parameterContainer;
+    public function __construct(
+        protected ParameterContainer $parameterContainer = new ParameterContainer(),
+        array|bool $options = false
+    ) {
+        if (is_array($options)) {
+            $this->bufferResults = $options['buffer_results'] ?? false;
+        } else {
+            $this->bufferResults = $options;
+        }
+    }
 
     #[Override]
     public function setDriver(
@@ -77,7 +88,7 @@ class Statement implements
 
     #[Override]
     public function setSql(
-        $sql
+        ?string $sql
     ): StatementInterface&DriverAwareInterface&ProfilerAwareInterface {
         $this->sql = $sql;
         return $this;
@@ -118,9 +129,9 @@ class Statement implements
             $sql
         );
 
-        $this->sql           = $sql;
+        $this->sql            = $sql;
         $this->statementName .= ++static::$statementIndex;
-        $this->resource      = pg_prepare($this->pgsql, $this->statementName, $sql);
+        $this->resource       = pg_prepare($this->pgsql, $this->statementName, $sql);
         return $this;
     }
 

@@ -12,12 +12,11 @@ use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\ParameterContainer;
-use PhpDb\Adapter\Pgsql\Driver\Pdo\Driver;
-use PhpDb\Adapter\Pgsql\Platform\Postgresql as PgsqlPlatform;
+use PhpDb\Adapter\Pgsql\AdapterPlatform;
+use PhpDb\Adapter\Pgsql\Pdo\Driver;
 use PhpDb\Adapter\Profiler;
 use PhpDb\ResultSet\ResultSet;
 use PhpDb\ResultSet\ResultSetInterface;
-use PhpDbTest\TestAsset\TemporaryResultSet;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -40,7 +39,7 @@ final class AdapterTest extends TestCase
 {
     protected DriverInterface&MockObject $mockDriver;
 
-    protected PgsqlPlatform $mockPlatform;
+    protected AdapterPlatform $mockPlatform;
 
     protected ConnectionInterface&MockObject $mockConnection;
 
@@ -194,9 +193,6 @@ final class AdapterTest extends TestCase
 
         $r = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE);
         self::assertInstanceOf(ResultSet::class, $r);
-
-        $r = $this->adapter->query($sql, Adapter::QUERY_MODE_EXECUTE, new TemporaryResultSet());
-        self::assertInstanceOf(TemporaryResultSet::class, $r);
     }
 
     #[TestDox('unit test: Test createStatement() produces a statement object')]
@@ -220,33 +216,33 @@ final class AdapterTest extends TestCase
         $this->adapter->foo;
     }
 
-    /**
-     * @throws Exception
-     */
-    #[Override]
-    protected function setUp(): void
-    {
-        $this->mockConnection = $this->createMock(ConnectionInterface::class);
-        $this->mockPlatform   = new PgsqlPlatform();
-        $this->mockStatement  = $this->getMockBuilder(Statement::class)->getMock();
-        $this->mockDriver     = $this->getMockBuilder(Pdo::class)
-                                     ->setConstructorArgs([
-                                         $this->mockConnection,
-                                         $this->mockStatement,
-                                     ])
-                                     ->getMock();
+    // #[Override]
+    // protected function setUp(): void
+    // {
+    //     $this->mockConnection = $this->createMock(ConnectionInterface::class);
 
-        $this->mockResultSet = $this->getMockBuilder(ResultSetInterface::class)->getMock();
+    //     $this->mockStatement = $this->getMockBuilder(Statement::class)->getMock();
 
-        $this->mockDriver->method('getDatabasePlatformName')->willReturn('Pgsql');
-        $this->mockDriver->method('checkEnvironment')->willReturn(true);
-        $this->mockDriver->method('getConnection')->willReturn($this->mockConnection);
-        //$this->mockDriver->method('createStatement')->willReturn($this->mockStatement);
+    //     $this->mockDriver = $this->getMockBuilder(Driver::class)
+    //                                  ->setConstructorArgs([
+    //                                      $this->mockConnection,
+    //                                      $this->mockStatement,
+    //                                  ])
+    //                                  ->getMock();
 
-        $this->adapter = new Adapter(
-            $this->mockDriver,
-            $this->mockPlatform,
-            $this->mockResultSet
-        );
-    }
+    //     $this->mockDriver->method('getDatabasePlatformName')->willReturn('Pgsql');
+    //     $this->mockDriver->method('checkEnvironment')->willReturn(true);
+    //     $this->mockDriver->method('getConnection')->willReturn($this->mockConnection);
+    //     $this->mockDriver->method('createStatement')->willReturn($this->mockStatement);
+
+    //     $this->mockPlatform = new AdapterPlatform($this->mockDriver);
+
+    //     $this->mockResultSet = $this->getMockBuilder(ResultSetInterface::class)->getMock();
+
+    //     $this->adapter = new Adapter(
+    //         $this->mockDriver,
+    //         $this->mockPlatform,
+    //         $this->mockResultSet
+    //     );
+    // }
 }

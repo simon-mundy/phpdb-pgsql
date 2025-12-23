@@ -71,7 +71,7 @@ class Result implements ResultInterface
     }
 
     #[Override]
-    public function isBuffered(): ?bool
+    public function isBuffered(): false
     {
         return false;
     }

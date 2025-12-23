@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Pgsql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Adapter\Pgsql\Pdo;
 
 use Override;
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
-use PhpDb\Adapter\Pgsql\Driver\Pdo\Driver;
-use PhpDb\Adapter\Pgsql\Driver\Pdo\Connection;
-use PhpDb\Adapter\Pgsql\Platform\Postgresql;
+use PhpDb\Adapter\Pgsql\AdapterPlatform;
+use PhpDb\Adapter\Pgsql\Pdo\Connection;
+use PhpDb\Adapter\Pgsql\Pdo\Driver;
 
 use function getenv;
 use function is_string;
@@ -40,15 +40,15 @@ trait SetupTrait
             'password' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_PASSWORD'),
         ];
 
-        $pdoDriver = new Pdo(
-        new Connection($connectionParams),
-        new Statement(),
-        new Result()
+        $pdoDriver = new Driver(
+            new Connection($connectionParams),
+            new Statement(),
+            new Result()
         );
 
         $this->adapter = new Adapter(
             $pdoDriver,
-            new Postgresql($pdoDriver)
+            new AdapterPlatform($pdoDriver)
         );
 
         $this->hostname = (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_HOSTNAME');

@@ -21,7 +21,7 @@ use const CASE_LOWER;
 class Source extends AbstractSource
 {
     #[Override]
-    protected function loadSchemaData()
+    protected function loadSchemaData(): void
     {
         if (isset($this->data['schemas'])) {
             return;

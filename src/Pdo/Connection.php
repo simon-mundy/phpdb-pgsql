@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Driver\Pdo;
+namespace PhpDb\Adapter\Pgsql\Pdo;
 
 use Override;
 use PDO;
@@ -26,7 +26,7 @@ class Connection extends AbstractPdoConnection
      * {@inheritDoc}
      */
     #[Override]
-    public function getCurrentSchema(): string|bool
+    public function getCurrentSchema(): string|false
     {
         if (! $this->isConnected()) {
             $this->connect();
