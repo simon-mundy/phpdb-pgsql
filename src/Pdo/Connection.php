@@ -15,10 +15,7 @@ use PhpDb\Adapter\Exception;
 
 use function array_diff_key;
 use function is_int;
-use function str_replace;
-use function str_starts_with;
 use function strtolower;
-use function substr;
 
 class Connection extends AbstractPdoConnection
 {
@@ -33,7 +30,7 @@ class Connection extends AbstractPdoConnection
         }
 
         /** @var PDOStatement $result */
-        $result = $this->resource->query('main');
+        $result = $this->resource->query('SELECT CURRENT_SCHEMA');
         if ($result instanceof PDOStatement) {
             return $result->fetchColumn();
         }
@@ -54,63 +51,54 @@ class Connection extends AbstractPdoConnection
             return $this;
         }
 
-        $dsn     = $username = $password = $hostname = $database = null;
+        $dsn     = $username = $password = $hostname = $database  = null;
         $options = [];
         foreach ($this->connectionParameters as $key => $value) {
-            switch (strtolower($key)) {
-                case 'dsn':
-                    $dsn = $value;
-                    break;
-                case 'driver':
-                    $value = strtolower((string) $value);
-                    if (str_starts_with($value, 'pdo')) {
-                        $pdoDriver = str_replace(['-', '_', ' '], '', $value);
-                        $pdoDriver = substr($pdoDriver, 3) ?: '';
-                    }
-                    break;
-                case 'pdodriver':
-                    $pdoDriver = (string) $value;
-                    break;
-                case 'user':
-                case 'username':
-                    $username = (string) $value;
-                    break;
-                case 'pass':
-                case 'password':
-                    $password = (string) $value;
-                    break;
-                case 'host':
-                case 'hostname':
-                    $hostname = (string) $value;
-                    break;
-                case 'database':
-                case 'dbname':
-                    $database = (string) $value;
-                    break;
-                case 'unix_socket':
-                    $unixSocket = (string) $value;
-                    break;
-                case 'driver_options':
-                case 'options':
+            $result = match (strtolower($key)) {
+                'dsn'                => $dsn        = (string) $value,
+                'user', 'username'   => $username   = (string)$value,
+                'password', 'pass'   => $password   = (string) $value,
+                'host', 'hostname'   => $hostname   = (string) $value,
+                'port'               => $port       = (int) $value,
+                'dbname', 'database' => $database   = (string) $value,
+                'unix_socket'        => $unixSocket = (string) $value,
+                // todo: should we suppport sslmode for pdo pgsql?
+                'driver_options' => (function (&$options, $value): void {
                     $value   = (array) $value;
                     $options = array_diff_key($options, $value) + $value;
-                    break;
-                default:
-                    $options[$key] = $value;
-                    break;
+                })($options, $value),
+                default => $options[$key] = $value,
+            };
+        }
+        unset($result);
+
+        if (! isset($dsn)) {
+            $dsn = [];
+            if (isset($unixSocket)) {
+                // If a unix socket is provided, use it as the hostname
+                $hostname = $unixSocket;
             }
+            if (isset($hostname)) {
+                $dsn[] = "host={$hostname}";
+            }
+            if (isset($port)) {
+                $dsn[] = "port={$port}";
+            }
+            if (isset($database)) {
+                $dsn[] = "dbname={$database}";
+            }
+            // todo: if sslmode is supported then $username and $password should not be passed in the dsn
+            if (isset($username)) {
+                $dsn[] = "user={$username}";
+            }
+            if (isset($password)) {
+                $dsn[] = "password={$password}";
+            }
+
+            $dsn = 'pgsql:' . implode(';', $dsn);
         }
 
-        if (isset($hostname) && isset($unixSocket)) {
-            throw new Exception\InvalidConnectionParametersException(
-                'Ambiguous connection parameters, both hostname and unix_socket parameters were set',
-                $this->connectionParameters
-            );
-        }
-
-        if (! isset($dsn) && isset($pdoDriver)) {
-            $dsn = $pdoDriver . ':' . $database;
-        } elseif (! isset($dsn)) {
+        if (! is_string($dsn)) {
             throw new Exception\InvalidConnectionParametersException(
                 'A dsn was not provided or could not be constructed from your parameters',
                 $this->connectionParameters
@@ -138,10 +126,9 @@ class Connection extends AbstractPdoConnection
      * {@inheritDoc}
      *
      * @param string $name
-     * @return string|null|false
      */
     #[Override]
-    public function getLastGeneratedValue($name = null): bool|int|string|null
+    public function getLastGeneratedValue($name = null): string|int|false
     {
         try {
             return $this->resource->lastInsertId($name);

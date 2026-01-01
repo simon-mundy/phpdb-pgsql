@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Pgsql\Pdo;
+namespace PhpDbIntegrationTest\Adapter\Pgsql;
 
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
@@ -25,14 +25,14 @@ class AdapterTest extends TestCase
     public function testConnection(): void
     {
         /** @var ConnectionInterface $connection */
-        $connection = $this->getAdapter(self::PDO_ADAPTER)->getDriver()->getConnection();
+        $connection = $this->getAdapter()->getDriver()->getConnection();
         $this->assertInstanceOf(ConnectionInterface::class, $connection);
     }
 
     public function testGetCurrentSchema(): void
     {
         /** @var AdapterInterface&SchemaAwareInterface&Adapter $adapter */
-        $adapter = $this->getAdapter(self::PDO_ADAPTER);
+        $adapter = $this->getAdapter();
         $schema  = $adapter->getCurrentSchema();
         self::assertIsString($schema);
         self::assertNotEmpty($schema);
@@ -43,10 +43,10 @@ class AdapterTest extends TestCase
         $isTcpConnection = $this->isTcpConnection();
 
         /** @var AdapterInterface&Adapter $adapter */
-        $adapter = $this->getAdapter(self::PDO_ADAPTER);
+        $adapter = $this->getAdapter();
+        /** @var ConnectionInterface $connection */
         $connection = $adapter->getDriver()->getConnection();
         $connection->connect();
-        $isConnected = $connection->isConnected();
         self::assertTrue($connection->isConnected());
         if ($isTcpConnection) {
             self::assertTrue($connection->isConnected());
@@ -54,7 +54,6 @@ class AdapterTest extends TestCase
 
         // todo: why is this not disconnecting
         $connection->disconnect();
-        $isConnected = $connection->isConnected();
         self::assertFalse($connection->isConnected());
         if ($isTcpConnection) {
             self::assertFalse($connection->isConnected());

@@ -1,88 +1,49 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PhpDbIntegrationTest\Adapter\Pgsql;
 
-use Override;
-use PhpDb\Adapter\Driver\Pdo;
+use Laminas\Stdlib\ErrorHandler;
 use PhpDb\Adapter\Pgsql\AdapterPlatform;
-use PhpDb\Adapter\Pgsql\Connection as PgSqlConnection;
-use PhpDb\Adapter\Pgsql\Driver;
-use PHPUnit\Framework\Attributes\Group;
+use PhpDbTestAsset\Pgsql\SetupTrait;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 
-use function extension_loaded;
-use function getenv;
-use function is_resource;
-use function pg_connect;
+use const E_USER_NOTICE;
 
-#[Group('integration')]
-#[Group('integration-postgres')]
+#[CoversClass(AdapterPlatform::class)]
+#[CoversMethod(AdapterPlatform::class, 'quoteValue')]
 final class AdapterPlatformTest extends TestCase
 {
-    /** @var array<string, resource> */
-    public array|\PDO $adapters = [];
+    use SetupTrait;
 
-    #[Override]
-    protected function setUp(): void
+    /**
+     * @return void
+     */
+    public function testQuoteValueWithPgsql(): void
     {
-        if (! getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL')) {
-            $this->markTestSkipped(self::class . ' integration tests are not enabled!');
-        }
-        if (extension_loaded('pgsql')) {
-            $this->adapters['pgsql'] = pg_connect(
-                'host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_HOSTNAME')
-                    . ' dbname=' . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_DATABASE')
-                    . ' user=' . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_USERNAME')
-                    . ' password=' . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_PASSWORD')
-            );
-        }
-        if (extension_loaded('pdo')) {
-            $this->adapters['pdo_pgsql'] = new \PDO(
-                'pgsql:host=' . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_HOSTNAME') . ';dbname='
-                . getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_DATABASE'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_USERNAME'),
-                getenv('TESTS_LAMINAS_DB_ADAPTER_PGSQL_PASSWORD')
-            );
-        }
+        $adapter = $this->getAdapter(self::NATIVE_ADAPTER);
+        $pgsql   = $adapter->getPlatform();
+        ErrorHandler::start(E_USER_NOTICE);
+        $value   = $pgsql->quoteValue('value');
+        ErrorHandler::stop();
+        self::assertEquals('\'value\'', $value);
+        // Should this assertion be?
+        //todo:  self::assertEquals('E\'value\'', $value);
     }
 
     /**
      * @return void
      */
-    public function testQuoteValueWithPgsql()
+    public function testQuoteValueWithPdoPgsql(): void
     {
-        if (
-            ! isset($this->adapters['pgsql'])
-            || (
-                ! $this->adapters['pgsql'] instanceof PgSqlConnection
-                && ! is_resource($this->adapters['pgsql'])
-            )
-        ) {
-            $this->markTestSkipped('Postgres (pgsql) not configured in unit test configuration file');
-        }
-        $pgsql = new AdapterPlatform($this->adapters['pgsql']);
+        $adapter = $this->getAdapter(self::PDO_ADAPTER);
+        $pgsql   = $adapter->getPlatform();
+        ErrorHandler::start(E_USER_NOTICE);
         $value = $pgsql->quoteValue('value');
-        self::assertEquals('\'value\'', $value);
-
-        $pgsql = new AdapterPlatform(new Driver(new PgSqlConnection($this->adapters['pgsql'])));
-        $value = $pgsql->quoteValue('value');
-        self::assertEquals('\'value\'', $value);
-    }
-
-    /**
-     * @return void
-     */
-    public function testQuoteValueWithPdoPgsql()
-    {
-        if (! isset($this->adapters['pdo_pgsql']) || ! $this->adapters['pdo_pgsql'] instanceof \PDO) {
-            $this->markTestSkipped('Postgres (PDO_PGSQL) not configured in unit test configuration file');
-        }
-        $pgsql = new Postgresql($this->adapters['pdo_pgsql']);
-        $value = $pgsql->quoteValue('value');
-        self::assertEquals('\'value\'', $value);
-
-        $pgsql = new Postgresql(new Pdo\Pdo(new Pdo\Connection($this->adapters['pdo_pgsql'])));
-        $value = $pgsql->quoteValue('value');
+        ErrorHandler::stop();
         self::assertEquals('\'value\'', $value);
     }
 }

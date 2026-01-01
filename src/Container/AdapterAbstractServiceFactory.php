@@ -27,8 +27,7 @@ use function is_array;
  */
 class AdapterAbstractServiceFactory implements AbstractFactoryInterface
 {
-    /** @var array */
-    protected $config;
+    protected ?array $config = null;
 
     /**
      * Can we create an adapter by the requested name?
@@ -38,6 +37,7 @@ class AdapterAbstractServiceFactory implements AbstractFactoryInterface
     public function canCreate(ContainerInterface $container, $requestedName): bool
     {
         $config = $this->getConfig($container);
+
         if ($config === []) {
             return false;
         }
@@ -66,7 +66,7 @@ class AdapterAbstractServiceFactory implements AbstractFactoryInterface
         }
 
         /** @var DriverInterface|PdoDriverInterface $driver */
-        $driver   = $container->build($driverClass, $this->config[$requestedName]);
+        $driver = $container->build($driverClass, $this->config[$requestedName]);
         /** @var PlatformInterface&Pgsql\AdapterPlatform $platform */
         $platform = $container->build(PlatformInterface::class, ['driver' => $driver]);
         /** @var ResultSetInterface|null $resultSet */
@@ -80,23 +80,23 @@ class AdapterAbstractServiceFactory implements AbstractFactoryInterface
 
         return match(true) {
             $resultSet !== null && $profiler !== null => new Adapter(
-                driver:$driver,
+                driver: $driver,
                 platform: $platform,
                 queryResultSetPrototype: $resultSet,
                 profiler: $profiler,
             ),
             $resultSet !== null => new Adapter(
-                driver:$driver,
+                driver: $driver,
                 platform: $platform,
                 queryResultSetPrototype: $resultSet,
             ),
             $profiler !== null => new Adapter(
-                driver:$driver,
+                driver: $driver,
                 platform: $platform,
                 profiler: $profiler,
             ),
             default => new Adapter(
-                driver:$driver,
+                driver: $driver,
                 platform: $platform,
             ),
         };
@@ -104,7 +104,7 @@ class AdapterAbstractServiceFactory implements AbstractFactoryInterface
 
     /**
      * Get db configuration, if any
-     * todo: refactor to use PhpDb\ConfigProvider::ADAPTERS_CONFIG_KEY instead of hardcoding 'adapters'
+     * todo: refactor to use PhpDb\ConfigProvider::NAMED_ADAPTER_KEY instead of hardcoding 'adapters'
      */
     protected function getConfig(ContainerInterface $container): array
     {
@@ -117,25 +117,8 @@ class AdapterAbstractServiceFactory implements AbstractFactoryInterface
             return $this->config;
         }
 
-        $config = $container->get('config');
-        if (
-            ! isset($config[AdapterInterface::class])
-            || ! is_array($config[AdapterInterface::class])
-        ) {
-            $this->config = [];
-            return $this->config;
-        }
-
-        $config = $config[AdapterInterface::class];
-        if (
-            ! isset($config['adapters'])
-            || ! is_array($config['adapters'])
-        ) {
-            $this->config = [];
-            return $this->config;
-        }
-
-        $this->config = $config['adapters'];
+        $config       = $container->get('config');
+        $this->config = $config[AdapterInterface::class]['adapters'] ?? [];
         return $this->config;
     }
 }

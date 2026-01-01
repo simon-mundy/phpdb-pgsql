@@ -27,7 +27,7 @@ final class IntegrationTestStartedListener implements StartedSubscriber
             return;
         }
 
-        if (getenv('TESTS_PHPDB_ADAPTER_MYSQL')) {
+        if ((bool) getenv('TESTS_PHPDB_ADAPTER_PGSQL')) {
             $this->fixtureLoaders[] = new PgsqlFixtureLoader();
         }
 

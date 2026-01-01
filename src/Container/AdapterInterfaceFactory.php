@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Pgsql\Container;
 
-use Laminas\ServiceManager\Exception\ServiceNotFoundException;
+use Laminas\ServiceManager\ServiceManager;
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Exception\RuntimeException;
 use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Adapter\Pgsql;
 use PhpDb\Adapter\Profiler\ProfilerInterface;
 use PhpDb\ResultSet\ResultSetInterface;
 use Psr\Container\ContainerInterface;
@@ -20,75 +20,81 @@ use function sprintf;
 class AdapterInterfaceFactory
 {
     public function __invoke(
-        ContainerInterface $container,
+        ContainerInterface|ServiceManager $container,
         string $requestedName,
-    ): AdapterInterface {
-        if (! $container->has('config')) {
-            throw new ServiceNotFoundException(
+    ): AdapterInterface&Adapter {
+        $config        = $container->get('config') ?? [];
+        $adapterConfig = null;
+
+        if (
+            isset($config[AdapterInterface::class]['connection'])
+            || isset($config[Adapter::class]['connection'])
+        ) {
+            $adapterConfig = $config[AdapterInterface::class] ?? $config[Adapter::class];
+        } else {
+            $adapterConfig = $config['adapters'][$requestedName] ?? $config;
+        }
+
+        if ($adapterConfig === []) {
+            throw Pgsql\Exception\ContainerException::forServiceFailure(
+                AdapterInterface::class,
                 sprintf(
-                    'Could not find service "config" in container %s',
-                    $container::class
+                    'No configuration found for adapter "%s"',
+                    $requestedName
                 )
             );
         }
 
-        /** @var array $config */
-        $config = $container->get('config');
+        /** @var class-string<DriverInterface>|class-string<PdoDriverInterface>|null  */
+        $driverClass = $adapterConfig['driver'] ?? null;
 
-        /** @var array $dbConfig */
-        $dbConfig = $config[AdapterInterface::class][$requestedName] ?? $config[AdapterInterface::class] ?? [];
-
-        if (! isset($dbConfig['driver'])) {
-            throw new RuntimeException(
-                'Database configuration must contain a "driver" key'
-            );
-        }
-
-        /** @var string $driver */
-        $driver = $dbConfig['driver'];
-        if (! $container->has($driver)) {
-            throw new ServiceNotFoundException(
+        if ($driverClass === null || ! $container->has($driverClass)) {
+            throw Pgsql\Exception\ContainerException::forServiceFailure(
+                AdapterInterface::class,
                 sprintf(
-                    'Could not find database driver service "%s" in container %s',
-                    $driver,
-                    $container::class
-                )
-            );
-        }
-        /** @var DriverInterface|PdoDriverInterface $driverInstance */
-        $driverInstance = $container->get($driver);
-
-        if (! $container->has(PlatformInterface::class)) {
-            throw new ServiceNotFoundException(
-                sprintf(
-                    'Could not find service "%s" in container %s',
-                    PlatformInterface::class,
-                    $container::class
+                    'Invalid or missing driver provided for adapter "%s"',
+                    $requestedName
                 )
             );
         }
 
-        /** @var PlatformInterface $adapterPlatform */
-        $adapterPlatform = $container->get(PlatformInterface::class);
+        /** @var DriverInterface|PdoDriverInterface */
+        $driver = $container->build($driverClass, $adapterConfig);
 
-        /** @var ProfilerInterface|null $profilerInstanceOrNull */
-        $profilerInstanceOrNull = $container->has(ProfilerInterface::class)
-            ? $container->get(ProfilerInterface::class)
+        /** @var PlatformInterface&AdapterPlatform */
+        $adapterPlatform = $container->build(PlatformInterface::class, ['driver' => $driver]);
+
+        /** @var ProfilerInterface|null */
+        $profilerInterface = $container->has(ProfilerInterface::class)
+            ?   $container->get(ProfilerInterface::class)
             : null;
 
-        if (! $container->has(ResultSetInterface::class)) {
-            return new $requestedName(
-                driver: $driverInstance,
-                platform: $adapterPlatform,
-                profiler: $profilerInstanceOrNull
-            );
-        }
+        /** @var ResultSetInterface|null */
+        $queryResultSetPrototype = $container->has(ResultSetInterface::class)
+            ? $container->get(ResultSetInterface::class)
+            : null;
 
-        return new $requestedName(
-            driver: $driverInstance,
-            platform: $adapterPlatform,
-            queryResultSetPrototype: $container->get(ResultSetInterface::class),
-            profiler: $profilerInstanceOrNull
-        );
+        return match(true) {
+            $queryResultSetPrototype !== null && $profilerInterface !== null => new Adapter(
+                driver: $driver,
+                platform: $adapterPlatform,
+                profiler: $profilerInterface,
+                queryResultSetPrototype: $queryResultSetPrototype,
+            ),
+            $queryResultSetPrototype !== null => new Adapter(
+                driver: $driver,
+                platform: $adapterPlatform,
+                queryResultSetPrototype: $queryResultSetPrototype,
+            ),
+            $profilerInterface !== null => new Adapter(
+                driver: $driver,
+                platform: $adapterPlatform,
+                profiler: $profilerInterface,
+            ),
+            default => new Adapter(
+                driver: $driver,
+                platform: $adapterPlatform,
+            ),
+        };
     }
 }

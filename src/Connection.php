@@ -12,7 +12,6 @@ use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Exception;
-use PhpDb\ResultSet\ResultSetInterface;
 
 use function array_filter;
 use function http_build_query;
@@ -36,10 +35,10 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 {
     protected Driver $driver;
 
-    /** @var PgSqlConnection|null */
+    /** @var ?PgSqlConnection */
     protected $resource;
 
-    /** @var null|int PostgreSQL connection type */
+    /** PostgreSQL connection type */
     protected ?int $type = null;
 
     public function __construct(PgSqlConnection|array $connectionInfo)
@@ -65,6 +64,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this->resource;
     }
 
+    #[Override]
     public function setDriver(
         DriverInterface $driver
     ): ConnectionInterface&DriverAwareInterface {
@@ -86,6 +86,10 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    #[Override]
     public function getCurrentSchema(): string|false
     {
         if (! $this->isConnected()) {
@@ -105,6 +109,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      *
      * @throws Exception\RuntimeException On failure.
      */
+    #[Override]
     public function connect(): static
     {
         if ($this->resource instanceof PgSqlConnection) {
@@ -148,6 +153,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function isConnected(): bool
     {
         return $this->resource instanceof PgSqlConnection;
@@ -156,16 +162,18 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function disconnect(): static
     {
         pg_close($this->resource);
-
+        $this->resource = null;
         return $this;
     }
 
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function beginTransaction(): static
     {
         if ($this->inTransaction()) {
@@ -185,6 +193,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function commit(): static
     {
         if (! $this->isConnected()) {
@@ -204,6 +213,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
     /**
      * {@inheritDoc}
      */
+    #[Override]
     public function rollback(): static
     {
         if (! $this->isConnected()) {
@@ -224,8 +234,8 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      * {@inheritDoc}
      *
      * @throws Exception\InvalidQueryException
-     * @return resource|ResultSetInterface
      */
+    #[Override]
     public function execute($sql): ResultInterface
     {
         if (! $this->isConnected()) {
@@ -248,9 +258,8 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     /**
      * {@inheritDoc}
-     *
-     * @return string
      */
+    #[Override]
     public function getLastGeneratedValue($name = null): bool|int|string|null
     {
         if ($name === null) {
@@ -288,7 +297,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             }
             $conn[$name] = $value;
         }
-
+        // todo:
         return urldecode(
             http_build_query(
                 array_filter($conn),
