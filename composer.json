@@ -30,17 +30,18 @@
         }
     },
     "require": {
-        "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
-        "php-db/phpdb": "^0.2.1"
+        "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+        "php-db/phpdb": "^0.4.1"
     },
     "require-dev": {
+        "ext-pdo_pgsql": "*",
+        "ext-pgsql": "*",
         "laminas/laminas-coding-standard": "^3.0.1",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
-        "phpunit/phpunit": "^11.5.15"
+        "phpunit/phpunit": "^11.5.42"
     },
     "suggest": {
-        "ext-pdo": "*",
         "ext-pdo_pgsql": "*",
         "ext-pgsql": "*",
         "laminas/laminas-servicemanager": "Laminas\\ServiceManager component"
@@ -53,13 +54,14 @@
     "autoload-dev": {
         "psr-4": {
             "PhpDbTest\\Adapter\\Pgsql\\": "test/unit/",
+            "PhpDbTestAsset\\Pgsql\\": "test/asset/",
             "PhpDbIntegrationTest\\Adapter\\Pgsql\\": "test/integration/"
         }
     },
     "scripts": {
         "check": [
             "@cs-check",
-            "@static-analysis",
+            "@sa",
             "@test",
             "@test-integration"
         ],
@@ -68,8 +70,9 @@
         "test": "phpunit --colors=always --testsuite \"unit test\"",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "test-integration": "phpunit --colors=always --testsuite \"integration test\"",
-        "static-analysis": "vendor/bin/phpstan analyse --memory-limit=256M",
+        "sa": "vendor/bin/phpstan analyse --memory-limit=256M",
         "sa-generate-baseline": "vendor/bin/phpstan analyse --memory-limit=256M --generate-baseline",
+        "sa-verbose": "vendor/bin/phpstan analyse --memory-limit=256M -vv",
         "upload-coverage": "coveralls -v"
     }
 }

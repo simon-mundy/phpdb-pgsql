@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Metadata\Source;
+namespace PhpDb\Adapter\Pgsql\Metadata;
 
 use DateTime;
 use Override;
@@ -18,10 +18,10 @@ use function key;
 
 use const CASE_LOWER;
 
-class PostgresqlMetadata extends AbstractSource
+class Source extends AbstractSource
 {
     #[Override]
-    protected function loadSchemaData()
+    protected function loadSchemaData(): void
     {
         if (isset($this->data['schemas'])) {
             return;

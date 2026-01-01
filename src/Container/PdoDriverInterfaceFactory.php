@@ -4,20 +4,43 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Pgsql\Container;
 
-use Laminas\ServiceManager\Factory\FactoryInterface;
-use PhpDb\Adapter\Driver\DriverInterface;
+use Laminas\ServiceManager\ServiceManager;
+use PhpDb\Adapter\AdapterInterface;
+use PhpDb\Adapter\Driver\Pdo\Result;
+use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Pgsql\Driver\Pdo;
+use PhpDb\Adapter\Pgsql\Exception\ContainerException;
+use PhpDb\Adapter\Pgsql\Pdo;
 use Psr\Container\ContainerInterface;
 
-final class PdoDriverInterfaceFactory implements FactoryInterface
+/**
+ *
+ * @internal
+ */
+final class PdoDriverInterfaceFactory
 {
     public function __invoke(
-        ContainerInterface $container,
+        ContainerInterface|ServiceManager $container,
         string $requestedName,
         ?array $options = null
-    ): DriverInterface&PdoDriverInterface {
-        // todo: pull deps from container
-        return new Pdo\Pdo($container->get('config')['db']);
+    ): PdoDriverInterface&Pdo\Driver {
+        if (! $container->has('config')) {
+            // todo: Once latest PR is merged for 0.5.0 update to use PhpDB\Exception\ContainerException
+            throw ContainerException::forServiceFailure(
+                Pdo\Driver::class,
+                'Container is missing a config service'
+            );
+        }
+        $config               = $container->get('config');
+        $connectionParameters = $options['connection']
+            ?? $config[$requestedName]['connection']
+            ?? $config[AdapterInterface::class]['adapters'][$requestedName]['connection']
+            ?? null;
+        $connection = $container->build(Pdo\Connection::class, ['connection' => $connectionParameters]);
+        return new Pdo\Driver(
+            connection: $connection,
+            statementPrototype: $container->build(Statement::class, ['options' => $options['options'] ?? []]),
+            resultPrototype: new Result(),
+        );
     }
 }

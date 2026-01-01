@@ -2,46 +2,38 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Platform;
+namespace PhpDb\Adapter\Pgsql;
 
 use Override;
 use PDO;
 use PgSql\Connection as PgSqlConnection;
-use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Driver\Pgsql\Pgsql;
-use PhpDb\Adapter\Exception;
-use PhpDb\Adapter\Pgsql\Driver\Pdo\Pdo as PdoDriver;
 use PhpDb\Adapter\Platform\AbstractPlatform;
 use PhpDb\Sql\Platform\Platform as SqlPlatformDecorator;
 use PhpDb\Sql\Platform\PlatformDecoratorInterface;
 
-use function get_resource_type;
 use function implode;
-use function in_array;
 use function is_resource;
 use function pg_escape_string;
 use function str_replace;
 
-class Postgresql extends AbstractPlatform
+class AdapterPlatform extends AbstractPlatform
 {
     public final const PLATFORM_NAME = 'PostgreSQL';
+
     /**
      * Overrides value from AbstractPlatform to use proper escaping for Postgres
-     *
-     * @var string
      */
-    protected $quoteIdentifierTo = '""';
+    protected string $quoteIdentifierTo = '""';
 
     /** @var string[] */
-    private $knownPgsqlResources = [
+    private array $knownPgsqlResources = [
         'pgsql link',
         'pgsql link persistent',
     ];
 
     public function __construct(
-        //private readonly PDO|Pgsql|PdoDriver $driver
         private readonly DriverInterface|PdoDriverInterface|PDO $driver,
     ) {
     }
@@ -79,7 +71,6 @@ class Postgresql extends AbstractPlatform
      * {@inheritDoc}
      *
      * @param scalar $value
-     * @return string
      */
     #[Override]
     public function quoteTrustedValue($value): string
