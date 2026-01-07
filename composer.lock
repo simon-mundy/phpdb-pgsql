@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5063e7391ca1bbb366715a6569a7af12",
+    "content-hash": "ef5a9885c442601a7cc739a431edf525",
     "packages": [
         {
             "name": "brick/varexporter",
@@ -259,16 +259,16 @@
         },
         {
             "name": "php-db/phpdb",
-            "version": "0.4.x-dev",
+            "version": "0.6.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-db/phpdb.git",
-                "reference": "3cb7531b36bf37c42843bbe9dd05583d8d8f130e"
+                "reference": "358211307cf82dbc107d6f2759276c737b741117"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-db/phpdb/zipball/3cb7531b36bf37c42843bbe9dd05583d8d8f130e",
-                "reference": "3cb7531b36bf37c42843bbe9dd05583d8d8f130e",
+                "url": "https://api.github.com/repos/php-db/phpdb/zipball/358211307cf82dbc107d6f2759276c737b741117",
+                "reference": "358211307cf82dbc107d6f2759276c737b741117",
                 "shasum": ""
             },
             "require": {
@@ -287,13 +287,14 @@
                 "phpbench/phpbench": "^1.4",
                 "phpstan/phpstan": "^2.1",
                 "phpstan/phpstan-phpunit": "^2.0",
-                "phpunit/phpunit": "^11.5.15",
+                "phpunit/phpunit": "^11.5.42",
                 "rector/rector": "^2.0"
             },
             "suggest": {
                 "laminas/laminas-eventmanager": "Laminas\\EventManager component",
                 "laminas/laminas-hydrator": "(^5.0.0) Laminas\\Hydrator component for using HydratingResultSets"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "laminas": {
@@ -323,7 +324,7 @@
                 "issues": "https://github.com/php-db/phpdb/issues",
                 "source": "https://github.com/php-db/phpdb"
             },
-            "time": "2025-12-05T01:52:04+00:00"
+            "time": "2026-01-06T06:52:43+00:00"
         },
         {
             "name": "psr/container",
@@ -809,16 +810,16 @@
         },
         {
             "name": "phpstan/phpstan-phpunit",
-            "version": "2.0.10",
+            "version": "2.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-phpunit.git",
-                "reference": "8d61a5854e7497d95bc85188e13537e99bd7aae7"
+                "reference": "5e30669bef866eff70db8b58d72a5c185aa82414"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-phpunit/zipball/8d61a5854e7497d95bc85188e13537e99bd7aae7",
-                "reference": "8d61a5854e7497d95bc85188e13537e99bd7aae7",
+                "url": "https://api.github.com/repos/phpstan/phpstan-phpunit/zipball/5e30669bef866eff70db8b58d72a5c185aa82414",
+                "reference": "5e30669bef866eff70db8b58d72a5c185aa82414",
                 "shasum": ""
             },
             "require": {
@@ -856,41 +857,41 @@
             "description": "PHPUnit extensions and rules for PHPStan",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan-phpunit/issues",
-                "source": "https://github.com/phpstan/phpstan-phpunit/tree/2.0.10"
+                "source": "https://github.com/phpstan/phpstan-phpunit/tree/2.0.11"
             },
-            "time": "2025-12-06T11:15:39+00:00"
+            "time": "2025-12-19T09:05:35+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "11.0.11",
+            "version": "11.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "4f7722aa9a7b76aa775e2d9d4e95d1ea16eeeef4"
+                "reference": "2c1ed04922802c15e1de5d7447b4856de949cf56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/4f7722aa9a7b76aa775e2d9d4e95d1ea16eeeef4",
-                "reference": "4f7722aa9a7b76aa775e2d9d4e95d1ea16eeeef4",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/2c1ed04922802c15e1de5d7447b4856de949cf56",
+                "reference": "2c1ed04922802c15e1de5d7447b4856de949cf56",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-libxml": "*",
                 "ext-xmlwriter": "*",
-                "nikic/php-parser": "^5.4.0",
+                "nikic/php-parser": "^5.7.0",
                 "php": ">=8.2",
                 "phpunit/php-file-iterator": "^5.1.0",
                 "phpunit/php-text-template": "^4.0.1",
                 "sebastian/code-unit-reverse-lookup": "^4.0.1",
                 "sebastian/complexity": "^4.0.1",
-                "sebastian/environment": "^7.2.0",
+                "sebastian/environment": "^7.2.1",
                 "sebastian/lines-of-code": "^3.0.1",
                 "sebastian/version": "^5.0.2",
-                "theseer/tokenizer": "^1.2.3"
+                "theseer/tokenizer": "^1.3.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^11.5.2"
+                "phpunit/phpunit": "^11.5.46"
             },
             "suggest": {
                 "ext-pcov": "PHP extension that provides line coverage",
@@ -928,7 +929,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
                 "security": "https://github.com/sebastianbergmann/php-code-coverage/security/policy",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/11.0.11"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/11.0.12"
             },
             "funding": [
                 {
@@ -948,7 +949,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-27T14:37:49+00:00"
+            "time": "2025-12-24T07:01:01+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
