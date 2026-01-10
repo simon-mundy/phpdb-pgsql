@@ -7,7 +7,6 @@ namespace PhpDb\Adapter\Pgsql;
 use Override;
 use PgSql\Result as PgSqlResult;
 use PhpDb\Adapter\Driver\ConnectionInterface;
-use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
@@ -20,6 +19,9 @@ use function array_merge;
 use function extension_loaded;
 use function is_string;
 
+/**
+ * @final
+ */
 class Driver implements DriverInterface, ProfilerAwareInterface
 {
     use DatabasePlatformNameTrait;
@@ -34,7 +36,7 @@ class Driver implements DriverInterface, ProfilerAwareInterface
     public function __construct(
         protected readonly ConnectionInterface&Connection $connection,
         protected readonly StatementInterface&Statement $statementPrototype,
-        protected readonly ResultInterface $resultPrototype,
+        protected readonly ResultInterface&Result $resultPrototype,
         array $options = []
     ) {
         $this->checkEnvironment();
@@ -42,12 +44,9 @@ class Driver implements DriverInterface, ProfilerAwareInterface
         //todo: verify this usage
         $options = array_intersect_key(array_merge($this->options, $options), $this->options);
 
-        if ($this->connection instanceof DriverAwareInterface) {
-            $this->connection->setDriver($this);
-        }
-        if ($this->statementPrototype instanceof DriverAwareInterface) {
-            $this->statementPrototype->setDriver($this);
-        }
+        $this->connection->setDriver($this);
+
+        $this->statementPrototype->setDriver($this);
     }
 
     #[Override]
@@ -55,13 +54,10 @@ class Driver implements DriverInterface, ProfilerAwareInterface
         ProfilerInterface $profiler
     ): DriverInterface&ProfilerAwareInterface {
         $this->profiler = $profiler;
-        if ($this->connection instanceof ProfilerAwareInterface) {
-            $this->connection->setProfiler($profiler);
-        }
 
-        if ($this->statementPrototype instanceof ProfilerAwareInterface) {
-            $this->statementPrototype->setProfiler($profiler);
-        }
+        $this->connection->setProfiler($profiler);
+
+        $this->statementPrototype->setProfiler($profiler);
 
         return $this;
     }
@@ -114,7 +110,7 @@ class Driver implements DriverInterface, ProfilerAwareInterface
     /**
      * Create result
      *
-     * @param PgSqlResult $resource
+     * @param PgSqlResult|resource $resource
      */
     #[Override]
     public function createResult($resource): ResultInterface&Result

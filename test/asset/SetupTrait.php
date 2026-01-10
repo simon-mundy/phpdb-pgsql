@@ -11,19 +11,22 @@ use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Pgsql;
+use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\ConfigProvider as PhpDbConfigProvider;
 use Psr\Container\ContainerInterface;
+
+use function getenv;
 
 trait SetupTrait
 {
     public final const NATIVE_ADAPTER = 'Pgsql\Adapter';
     public final const PDO_ADAPTER    = 'Pgsql\Pdo\Adapter';
-    protected array $conn = [];
+    protected array $conn             = [];
     protected ServiceManager $serviceManager;
     protected function setUp(): void
     {
-        $conn = [
+        $conn       = [
             'host'     => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_HOSTNAME'),
             'port'     => 5432,
             'username' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_USERNAME'),
@@ -45,23 +48,28 @@ trait SetupTrait
                 ],
             ]
         );
+        $serviceManagerConfig = ArrayUtils::merge(
+            $serviceManagerConfig,
+            (new PhpDbConfigProvider())()['dependencies']
+        );
         $this->serviceManager = new ServiceManager($serviceManagerConfig);
         return $this->serviceManager->get($adapter);
     }
 
     public function getTestConfig(): array
     {
-
         return [
             AdapterInterface::class => [
-                'driver'   => Pgsql\Driver::class,
-                'adapters' => [
+                'driver'     => Pgsql\Driver::class,
+                'connection' => $this->conn,
+                // Named Adapter configurations
+                PhpDbConfigProvider::NAMED_ADAPTER_KEY => [
                     self::NATIVE_ADAPTER => [
-                        'driver' => Pgsql\Driver::class,
+                        'driver'     => Pgsql\Driver::class,
                         'connection' => $this->conn,
                     ],
-                    self::PDO_ADAPTER => [
-                        'driver' => Pgsql\Pdo\Driver::class,
+                    self::PDO_ADAPTER    => [
+                        'driver'     => Pgsql\Pdo\Driver::class,
                         'connection' => $this->conn,
                     ],
                 ],
@@ -75,9 +83,9 @@ trait SetupTrait
         $pdoDriverMock = $this->getMockBuilder(PdoDriverInterface::class)->getMock();
         $testConfig    = [
             AdapterInterface::class => [
-                'adapters' => [
+                PhpDbConfigProvider::NAMED_ADAPTER_KEY => [
                     self::NATIVE_ADAPTER => [
-                        'driver' => Pgsql\Driver::class,
+                        'driver'     => Pgsql\Driver::class,
                         'connection' => [
                             'host'     => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_HOSTNAME'),
                             'port'     => 5432,
@@ -86,8 +94,8 @@ trait SetupTrait
                             'database' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_DATABASE'),
                         ],
                     ],
-                    self::PDO_ADAPTER => [
-                        'driver' => Pgsql\Pdo\Driver::class,
+                    self::PDO_ADAPTER    => [
+                        'driver'     => Pgsql\Pdo\Driver::class,
                         'connection' => [
                             'host'     => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_HOSTNAME'),
                             'port'     => 5432,
@@ -98,10 +106,7 @@ trait SetupTrait
                     ],
                 ],
             ],
-            'dependencies' => [
-                'abstract_factories' => [
-                    Pgsql\Container\AdapterAbstractServiceFactory::class,
-                ],
+            'dependencies'          => [
                 'aliases'   => [
                     DriverInterface::class        => Pgsql\Driver::class,
                     'pgsql'                       => Pgsql\Driver::class,
@@ -124,7 +129,7 @@ trait SetupTrait
                     PlatformInterface::class      => Pgsql\AdapterPlatform::class,
                 ],
                 'factories' => [
-                    Pgsql\Driver::class => function (ContainerInterface $container) use ($driverMock) {
+                    Pgsql\Driver::class     => function (ContainerInterface $container) use ($driverMock) {
                         return $driverMock;
                     },
                     Pgsql\Pdo\Driver::class => function (ContainerInterface $container) use ($pdoDriverMock) {

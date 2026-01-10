@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Pgsql\Container;
 
-use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\Pgsql;
 use Psr\Container\ContainerInterface;
+
 final class StatementInterfaceFactory
 {
     public function __invoke(
@@ -15,7 +15,6 @@ final class StatementInterfaceFactory
         string $requestedName,
         ?array $options = null
     ): StatementInterface {
-
         return new Pgsql\Statement(
             options: $options['options'] ?? false
         );

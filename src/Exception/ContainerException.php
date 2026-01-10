@@ -7,6 +7,8 @@ namespace PhpDb\Adapter\Pgsql\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
 
+use function sprintf;
+
 final class ContainerException extends RuntimeException implements ContainerExceptionInterface
 {
     public static function forServiceFailure(
@@ -16,8 +18,8 @@ final class ContainerException extends RuntimeException implements ContainerExce
         return new self(
             sprintf(
                 'Failed to create service "%s": %s',
-                 $serviceName,
-                 $reason
+                $serviceName,
+                $reason
             ),
             0,
         );

@@ -43,7 +43,7 @@ class AdapterTest extends TestCase
         $isTcpConnection = $this->isTcpConnection();
 
         /** @var AdapterInterface&Adapter $adapter */
-        $adapter = $this->getAdapter(self::PDO_ADAPTER);
+        $adapter    = $this->getAdapter(self::PDO_ADAPTER);
         $connection = $adapter->getDriver()->getConnection();
         $connection->connect();
         $isConnected = $connection->isConnected();

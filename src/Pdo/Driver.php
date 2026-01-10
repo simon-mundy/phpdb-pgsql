@@ -16,7 +16,7 @@ class Driver extends AbstractPdo
     use DatabasePlatformNameTrait;
 
     /**
-     * @param PDOStatement $resource
+     * @param PDOStatement|resource $resource
      */
     #[Override]
     public function createResult($resource): ResultInterface

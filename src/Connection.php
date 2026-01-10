@@ -33,7 +33,7 @@ use const PGSQL_CONNECT_FORCE_NEW;
 
 class Connection extends AbstractConnection implements DriverAwareInterface
 {
-    protected Driver $driver;
+    protected DriverInterface|Driver $driver;
 
     /** @var ?PgSqlConnection */
     protected $resource;
@@ -58,6 +58,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         return $this;
     }
 
+    /** @phpstan-ignore method.childReturnType */
     #[Override]
     public function getResource(): ?PgSqlConnection
     {
@@ -66,7 +67,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
 
     #[Override]
     public function setDriver(
-        DriverInterface $driver
+        DriverInterface|Driver $driver
     ): ConnectionInterface&DriverAwareInterface {
         $this->driver = $driver;
 
@@ -120,8 +121,8 @@ class Connection extends AbstractConnection implements DriverAwareInterface
         set_error_handler(function ($number, $string) {
             throw new Exception\RuntimeException(
                 self::class . '::connect: Unable to connect to database',
-                $number ?? 0,
-                new Exception\ErrorException($string, $number ?? 0)
+                $number,
+                new Exception\ErrorException($string, $number)
             );
         });
         try {
@@ -253,6 +254,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
             throw new Exception\InvalidQueryException(pg_last_error($this->resource));
         }
 
+        /** @phpstan-ignore argument.type */
         return $this->driver->createResult($resultResource);
     }
 

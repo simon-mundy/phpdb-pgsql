@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace PhpDbTest\Pgsql;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
-use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
+use PhpDb\Adapter\Driver\Pdo\Statement as PdoStatement;
 use PhpDb\Adapter\Pgsql;
+use PhpDb\Adapter\Pgsql\Pdo\Connection as PdoConnection;
+use PhpDb\Adapter\Pgsql\Pdo\Driver as PdoDriver;
 use PhpDb\Adapter\Platform\PlatformInterface;
-use PhpDb\Adapter\Profiler\Profiler;
-use PhpDb\Adapter\Profiler\ProfilerInterface;
-use PhpDb\Container\AdapterAbstractServiceFactory;
 use PhpDb\Metadata\MetadataInterface;
 use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\Attributes\Depends;
@@ -32,31 +31,30 @@ final class ConfigProviderTest extends TestCase
             'PgSQL'                       => Pgsql\Driver::class,
             'Postgresql'                  => Pgsql\Driver::class,
             'PostgreSQL'                  => Pgsql\Driver::class,
-            PdoDriverInterface::class     => Pgsql\Pdo\Driver::class,
-            'pdo_pgsql'                   => Pgsql\Pdo\Driver::class,
-            'PDO_pgsql'                   => Pgsql\Pdo\Driver::class,
-            'PDO_PgSQL'                   => Pgsql\Pdo\Driver::class,
-            'Pdo_PgSQL'                   => Pgsql\Pdo\Driver::class,
-            'PDO_postgresql'              => Pgsql\Pdo\Driver::class,
-            'pdo_postgresql'              => Pgsql\Pdo\Driver::class,
-            'PDO_Postgresql'              => Pgsql\Pdo\Driver::class,
-            'Pdo_Postgresql'              => Pgsql\Pdo\Driver::class,
-            'PDO_PostgreSQL'              => Pgsql\Pdo\Driver::class,
-            'pdo_PostgreSQL'              => Pgsql\Pdo\Driver::class,
+            PdoDriverInterface::class     => PdoDriver::class,
+            'pdo_pgsql'                   => PdoDriver::class,
+            'PDO_pgsql'                   => PdoDriver::class,
+            'PDO_PgSQL'                   => PdoDriver::class,
+            'Pdo_PgSQL'                   => PdoDriver::class,
+            'PDO_postgresql'              => PdoDriver::class,
+            'pdo_postgresql'              => PdoDriver::class,
+            'PDO_Postgresql'              => PdoDriver::class,
+            'Pdo_Postgresql'              => PdoDriver::class,
+            'PDO_PostgreSQL'              => PdoDriver::class,
             ConnectionInterface::class    => Pgsql\Connection::class,
             MetadataInterface::class      => Pgsql\Metadata\Source::class,
             PdoConnectionInterface::class => Pgsql\Pdo\Connection::class,
             PlatformInterface::class      => Pgsql\AdapterPlatform::class,
-            ProfilerInterface::class      => Profiler::class,
         ],
         'factories' => [
-            AdapterInterface::class      => Pgsql\Container\AdapterInterfaceFactory::class,
-            Pgsql\Driver::class          => Pgsql\Container\DriverInterfaceFactory::class,
-            Pgsql\Pdo\Driver::class      => Pgsql\Container\PdoDriverInterfaceFactory::class,
-            Pgsql\Connection::class      => Pgsql\Container\ConnectionInterfaceFactory::class,
-            Pgsql\Pdo\Connection::class  => Pgsql\Container\PdoConnectionInterfaceFactory::class,
             Pgsql\AdapterPlatform::class => Pgsql\Container\PlatformInterfaceFactory::class,
-            Profiler::class              => InvokableFactory::class,
+            Pgsql\Connection::class      => Pgsql\Container\ConnectionInterfaceFactory::class,
+            Pgsql\Driver::class          => Pgsql\Container\DriverInterfaceFactory::class,
+            Pgsql\Metadata\Source::class => Pgsql\Container\MetadataInterfaceFactory::class,
+            Pgsql\Statement::class       => Pgsql\Container\StatementInterfaceFactory::class,
+            PdoConnection::class         => Pgsql\Container\PdoConnectionInterfaceFactory::class,
+            PdoDriver::class             => Pgsql\Container\PdoDriverInterfaceFactory::class,
+            PdoStatement::class          => Pgsql\Container\PdoStatementFactory::class,
         ],
     ];
 

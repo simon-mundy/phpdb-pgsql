@@ -14,13 +14,12 @@ use PhpDb\Adapter\Pgsql\Pdo;
 use Psr\Container\ContainerInterface;
 
 /**
- *
  * @internal
  */
 final class PdoDriverInterfaceFactory
 {
     public function __invoke(
-        ContainerInterface|ServiceManager $container,
+        ContainerInterface&ServiceManager $container,
         string $requestedName,
         ?array $options = null
     ): PdoDriverInterface&Pdo\Driver {
@@ -36,7 +35,7 @@ final class PdoDriverInterfaceFactory
             ?? $config[$requestedName]['connection']
             ?? $config[AdapterInterface::class]['adapters'][$requestedName]['connection']
             ?? null;
-        $connection = $container->build(Pdo\Connection::class, ['connection' => $connectionParameters]);
+        $connection           = $container->build(Pdo\Connection::class, ['connection' => $connectionParameters]);
         return new Pdo\Driver(
             connection: $connection,
             statementPrototype: $container->build(Statement::class, ['options' => $options['options'] ?? []]),

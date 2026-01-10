@@ -9,7 +9,7 @@ use PhpDb\Adapter\Driver\StatementInterface;
 use PhpDb\Adapter\ParameterContainer;
 use Psr\Container\ContainerInterface;
 
-final class PdoStatemenFactory
+final class PdoStatementFactory
 {
     public function __invoke(
         ContainerInterface $container,
