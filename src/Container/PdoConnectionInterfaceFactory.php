@@ -11,6 +11,8 @@ use PhpDb\Adapter\Pgsql\Exception\ContainerException;
 use PhpDb\Adapter\Pgsql\Pdo;
 use Psr\Container\ContainerInterface;
 
+use function is_array;
+
 /**
  * @internal
  */

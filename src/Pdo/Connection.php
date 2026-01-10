@@ -14,7 +14,9 @@ use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Exception;
 
 use function array_diff_key;
+use function implode;
 use function is_int;
+use function str_contains;
 use function strtolower;
 
 class Connection extends AbstractPdoConnection
@@ -56,7 +58,7 @@ class Connection extends AbstractPdoConnection
         foreach ($this->connectionParameters as $key => $value) {
             $result = match (strtolower($key)) {
                 'dsn'                => $dsn        = (string) $value,
-                'user', 'username'   => $username   = (string)$value,
+                'user', 'username'   => $username   = (string) $value,
                 'password', 'pass'   => $password   = (string) $value,
                 'host', 'hostname'   => $hostname   = (string) $value,
                 'port'               => $port       = (int) $value,
@@ -98,7 +100,11 @@ class Connection extends AbstractPdoConnection
             $dsn = 'pgsql:' . implode(';', $dsn);
         }
 
-        if (! is_string($dsn)) {
+        if (
+            ! str_contains($dsn, 'host=')
+            && ! str_contains($dsn, 'dbname=')
+            && ! str_contains($dsn, 'user=')
+        ) {
             throw new Exception\InvalidConnectionParametersException(
                 'A dsn was not provided or could not be constructed from your parameters',
                 $this->connectionParameters
@@ -125,7 +131,7 @@ class Connection extends AbstractPdoConnection
     /**
      * {@inheritDoc}
      *
-     * @param string $name
+     * @param ?string $name
      */
     #[Override]
     public function getLastGeneratedValue($name = null): string|int|false

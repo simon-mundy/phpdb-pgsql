@@ -27,12 +27,6 @@ class AdapterPlatform extends AbstractPlatform
      */
     protected string $quoteIdentifierTo = '""';
 
-    /** @var string[] */
-    private array $knownPgsqlResources = [
-        'pgsql link',
-        'pgsql link persistent',
-    ];
-
     public function __construct(
         private readonly DriverInterface|PdoDriverInterface|PDO $driver,
     ) {
@@ -89,6 +83,7 @@ class AdapterPlatform extends AbstractPlatform
      */
     protected function quoteViaDriver($value): ?string
     {
+        /** @var PgSqlConnection|string $resource */
         $resource = $this->driver instanceof DriverInterface
             ? $this->driver->getConnection()->getResource()
             : $this->driver;

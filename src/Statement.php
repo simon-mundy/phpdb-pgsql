@@ -33,9 +33,9 @@ class Statement implements
 
     protected string $statementName = 'statement';
 
-    protected Driver $driver;
+    protected DriverInterface|Driver $driver;
 
-    protected ProfilerInterface $profiler;
+    protected ?ProfilerInterface $profiler = null;
 
     protected PgSqlConnection $pgsql;
 
@@ -70,7 +70,7 @@ class Statement implements
         return $this;
     }
 
-    public function getProfiler(): (StatementInterface&ProfilerInterface)|null
+    public function getProfiler(): ?ProfilerInterface
     {
         return $this->profiler;
     }
@@ -154,13 +154,9 @@ class Statement implements
         }
 
         /** START Standard ParameterContainer Merging Block */
-        if (! $this->parameterContainer instanceof ParameterContainer) {
-            if ($parameters instanceof ParameterContainer) {
-                $this->parameterContainer = $parameters;
-                $parameters               = null;
-            } else {
-                $this->parameterContainer = new ParameterContainer();
-            }
+        if ($parameters instanceof ParameterContainer) {
+            $this->parameterContainer = $parameters;
+            $parameters               = null;
         }
 
         if (is_array($parameters)) {
@@ -181,7 +177,7 @@ class Statement implements
         if ($resultResource === false) {
             throw new Exception\InvalidQueryException(pg_last_error());
         }
-
+        /** @phpstan-ignore argument.type */
         return $this->driver->createResult($resultResource);
     }
 }

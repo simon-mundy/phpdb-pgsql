@@ -12,7 +12,7 @@ use Psr\Container\ContainerInterface;
 final class DriverInterfaceFactory
 {
     public function __invoke(
-        ContainerInterface|ServiceManager $container,
+        ContainerInterface&ServiceManager $container,
         string $requestedName,
         ?array $options = null
     ): DriverInterface {

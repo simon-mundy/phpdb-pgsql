@@ -8,6 +8,7 @@ use DateTime;
 use Override;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Metadata\Source\AbstractSource;
+use PhpDb\ResultSet;
 
 use function array_change_key_case;
 use function array_walk;
@@ -36,6 +37,7 @@ class Source extends AbstractSource
             . ' != \'information_schema\''
             . ' AND ' . $p->quoteIdentifier('schema_name') . " NOT LIKE 'pg_%'";
 
+        /** @var ResultSet\ResultSetInterface&ResultSet\ResultSet $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $schemas = [];
@@ -88,6 +90,7 @@ class Source extends AbstractSource
                 . ' != \'information_schema\'';
         }
 
+        /** @var ResultSet\ResultSetInterface&ResultSet\ResultSet $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $tables = [];
@@ -144,6 +147,7 @@ class Source extends AbstractSource
                 . ' = ' . $platform->quoteTrustedValue($schema);
         }
 
+        /** @var ResultSet\ResultSetInterface&ResultSet\ResultSet $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
         $columns = [];
         foreach ($results->toArray() as $row) {
@@ -257,10 +261,12 @@ class Source extends AbstractSource
               . ', ' . $p->quoteIdentifierChain(['tc', 'constraint_name'])
               . ', ' . $p->quoteIdentifierChain(['kcu', 'ordinal_position']);
 
+        /** @var ResultSet\ResultSetInterface&ResultSet\ResultSet  $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $name        = null;
         $constraints = [];
+        $isFK        = false;
         foreach ($results->toArray() as $row) {
             if ($row['constraint_name'] !== $name) {
                 $name               = $row['constraint_name'];
@@ -345,6 +351,7 @@ class Source extends AbstractSource
                 . ' != \'information_schema\'';
         }
 
+        /** @var ResultSet\ResultSetInterface&ResultSet\ResultSet $results */
         $results = $this->adapter->query($sql, AdapterInterface::QUERY_MODE_EXECUTE);
 
         $data = [];

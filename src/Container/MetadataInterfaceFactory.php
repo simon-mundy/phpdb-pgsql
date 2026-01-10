@@ -6,5 +6,4 @@ namespace PhpDb\Adapter\Pgsql\Container;
 
 final class MetadataInterfaceFactory
 {
-
 }

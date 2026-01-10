@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Pgsql\Container;
 
-use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Pgsql;
+use PhpDb\Adapter\Platform\PlatformInterface;
 use Psr\Container\ContainerInterface;
 
 final class PlatformInterfaceFactory
@@ -20,8 +20,8 @@ final class PlatformInterfaceFactory
     ): PlatformInterface&Pgsql\AdapterPlatform {
         $driver = $options['driver'] ?? null;
         if (
-            ! ($driver instanceof Pgsql\Driver)
-            && ! ($driver instanceof Pgsql\Pdo\Driver)
+            ! $driver instanceof Pgsql\Driver
+            && ! $driver instanceof Pgsql\Pdo\Driver
         ) {
             // todo: Once latest PR is merged for 0.5.0 update to use PhpDB\Exception\ContainerException
             throw Pgsql\Exception\ContainerException::forServiceFailure(

@@ -4,30 +4,29 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Pgsql;
 
-use Laminas\ServiceManager\Factory\InvokableFactory;
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\Pdo\Statement as PdoStatement;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Driver\Pdo\Statement as PdoStatement;
-use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Adapter\Pgsql\Pdo\Connection as PdoConnection;
 use PhpDb\Adapter\Pgsql\Pdo\Driver as PdoDriver;
-use PhpDb\Adapter\Profiler\Profiler;
-use PhpDb\Adapter\Profiler\ProfilerInterface;
-use PhpDb\Container\AdapterAbstractServiceFactory;
+use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\ConfigProvider as PhpDbConfigProvider;
 use PhpDb\Metadata\MetadataInterface;
-use PhpDb\ResultSet\ResultSetInterface;
 
+/**
+ * @internal
+ */
 final readonly class ConfigProvider
 {
     public function __invoke(): array
     {
         return [
             'dependencies'          => $this->getDependencies(),
-            AdapterInterface::class => $this->getConfig(),
+            //AdapterInterface::class => $this->getConfig(),
         ];
     }
 
@@ -44,7 +43,7 @@ final readonly class ConfigProvider
                 'database' => 'your_database',
             ],
             // Named Adapter configurations
-            'adapters' => [
+            PhpDbConfigProvider::NAMED_ADAPTER_KEY => [
                 AdapterInterface::class => [
                     'driver'     => Driver::class,
                     'connection' => [
@@ -62,11 +61,7 @@ final readonly class ConfigProvider
     public function getDependencies(): array
     {
         return [
-            'abstract_factories' => [
-                Container\AdapterAbstractServiceFactory::class,
-            ],
             'aliases'   => [
-                AdapterInterface::class       => Adapter::class,
                 DriverInterface::class        => Driver::class,
                 'pgsql'                       => Driver::class,
                 'PgSQL'                       => Driver::class,
@@ -88,15 +83,14 @@ final readonly class ConfigProvider
                 PlatformInterface::class      => AdapterPlatform::class,
             ],
             'factories' => [
-                Adapter::class          => Container\AdapterInterfaceFactory::class,
-                AdapterPlatform::class  => Container\PlatformInterfaceFactory::class,
-                Connection::class       => Container\ConnectionInterfaceFactory::class,
-                Metadata\Source::class  => Container\MetadataInterfaceFactory::class,
-                Statement::class        => Container\StatementInterfaceFactory::class,
-                Driver::class           => Container\DriverInterfaceFactory::class,
-                PdoConnection::class    => Container\PdoConnectionInterfaceFactory::class,
-                PdoDriver::class        => Container\PdoDriverInterfaceFactory::class,
-                PdoStatement::class     => Container\PdoStatemenFactory::class,
+                AdapterPlatform::class => Container\PlatformInterfaceFactory::class,
+                Connection::class      => Container\ConnectionInterfaceFactory::class,
+                Driver::class          => Container\DriverInterfaceFactory::class,
+                Metadata\Source::class => Container\MetadataInterfaceFactory::class,
+                PdoConnection::class   => Container\PdoConnectionInterfaceFactory::class,
+                PdoDriver::class       => Container\PdoDriverInterfaceFactory::class,
+                PdoStatement::class    => Container\PdoStatementFactory::class,
+                Statement::class       => Container\StatementInterfaceFactory::class,
                 // Provide the following if you wish to override the Profiler implementation
                 //ProfilerInterface::class => YourCustomProfilerFactory::class,
                 // Provide the following if you wish to override the ResultSet implementation

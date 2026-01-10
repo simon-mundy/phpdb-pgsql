@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Pgsql\Driver\Pdo;
+namespace PhpDbIntegrationTest\Adapter\Pgsql\Pdo;
 
 use PhpDb\Sql\TableIdentifier;
 use PhpDb\TableGateway\Feature\FeatureSet;

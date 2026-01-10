@@ -6,8 +6,10 @@ namespace PhpDbTest\Adapter\Pgsql\Adapter;
 
 use PhpDb\Adapter\AdapterInterface;
 use PhpDbTestAsset\Pgsql\SetupTrait;
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\TestCase;
 
+#[CoversTrait(SetupTrait::class)]
 final class SetupTest extends TestCase
 {
     use SetupTrait;
