@@ -57,13 +57,13 @@ class Connection extends AbstractPdoConnection
         $options = [];
         foreach ($this->connectionParameters as $key => $value) {
             $result = match (strtolower($key)) {
-                'dsn'                => $dsn        = (string) $value,
-                'user', 'username'   => $username   = (string) $value,
-                'password', 'pass'   => $password   = (string) $value,
-                'host', 'hostname'   => $hostname   = (string) $value,
-                'port'               => $port       = (int) $value,
-                'dbname', 'database' => $database   = (string) $value,
-                'unix_socket'        => $unixSocket = (string) $value,
+                'dsn'                                => $dsn        = (string) $value,
+                'user', 'username'                   => $username   = (string) $value,
+                'password', 'passwd', 'pw'           => $password   = (string) $value,
+                'host', 'hostname'                   => $hostname   = (string) $value,
+                'port'                               => $port       = (int) $value,
+                'dbname', 'database', 'db', 'schema' => $database   = (string) $value,
+                'unix_socket'                        => $unixSocket = (string) $value,
                 // todo: should we suppport sslmode for pdo pgsql?
                 'driver_options' => (function (&$options, $value): void {
                     $value   = (array) $value;

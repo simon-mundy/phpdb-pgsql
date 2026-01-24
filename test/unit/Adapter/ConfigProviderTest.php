@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace PhpDbTest\Pgsql;
 
-use Laminas\ServiceManager\Factory\InvokableFactory;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
+use PhpDb\Adapter\Driver\Pdo\Statement as PdoStatement;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Driver\Pdo\Statement as PdoStatement;
 use PhpDb\Adapter\Pgsql;
 use PhpDb\Adapter\Pgsql\Pdo\Connection as PdoConnection;
 use PhpDb\Adapter\Pgsql\Pdo\Driver as PdoDriver;

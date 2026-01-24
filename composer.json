@@ -1,5 +1,5 @@
 {
-    "name": "php-db/phpdb-adapter-pgsql",
+    "name": "php-db/phpdb-pgsql",
     "description": "PostgreSQL support for php-db",
     "license": "BSD-3-Clause",
     "keywords": [
@@ -9,9 +9,9 @@
     ],
     "homepage": "https://php-db.dev",
     "support": {
-        "issues": "https://github.com/php-db/phpdb-adapter-pgsql/issues",
-        "source": "https://github.com/php-db/phpdb-adapter-pgsql",
-        "forum": "https://github.com/php-db/phpdb-adapter-pgsql/discussions"
+        "issues": "https://github.com/php-db/phpdb-pgsql/issues",
+        "source": "https://github.com/php-db/phpdb-pgsql",
+        "forum": "https://github.com/php-db/phpdb-pgsql/discussions"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

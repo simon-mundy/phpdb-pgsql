@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhpDb\Adapter\Pgsql;
 
-use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
@@ -25,7 +24,7 @@ final readonly class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'dependencies'          => $this->getDependencies(),
+            'dependencies' => $this->getDependencies(),
             //AdapterInterface::class => $this->getConfig(),
         ];
     }
