@@ -262,7 +262,7 @@ class Connection extends AbstractConnection implements DriverAwareInterface
      * {@inheritDoc}
      */
     #[Override]
-    public function getLastGeneratedValue($name = null): bool|int|string|null
+    public function getLastGeneratedValue(?string $name = null): string|int|false|null
     {
         if ($name === null) {
             return null;
