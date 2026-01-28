@@ -21,9 +21,10 @@ final class DriverInterfaceFactory
             throw ContainerException::forService(
                 Pgsql\Driver::class,
                 self::class,
-                '$options["connection"] must contain an array of connection parameters.'
+                '$options["connection"] must contain an array of connection configuration.'
             );
         }
+
         $connection = $container->build(Pgsql\Connection::class, $options);
         return new Pgsql\Driver(
             connection:$connection,
