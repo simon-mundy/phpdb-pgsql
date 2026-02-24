@@ -10,18 +10,16 @@ use PgSql\Connection as PgSqlConnection;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
 use PhpDb\Adapter\Platform\AbstractPlatform;
-use PhpDb\Sql\Platform\Platform as SqlPlatformDecorator;
-use PhpDb\Sql\Platform\PlatformDecoratorInterface;
+use PhpDb\Adapter\Platform\SequenceCapableInterface;
+use PhpDb\Sql\Strategy\SqlStrategyInterface;
 
 use function implode;
 use function is_resource;
 use function pg_escape_string;
 use function str_replace;
 
-class AdapterPlatform extends AbstractPlatform
+class AdapterPlatform extends AbstractPlatform implements SequenceCapableInterface
 {
-    public final const PLATFORM_NAME = 'PostgreSQL';
-
     /**
      * Overrides value from AbstractPlatform to use proper escaping for Postgres
      */
@@ -29,16 +27,25 @@ class AdapterPlatform extends AbstractPlatform
 
     public function __construct(
         private readonly DriverInterface|PdoDriverInterface|PDO $driver,
+        ?SqlStrategyInterface $sqlStrategy = null,
     ) {
+        $this->sqlStrategy = $sqlStrategy;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     #[Override]
-    public function getName(): string
+    protected function createDefaultSqlStrategy(): SqlStrategyInterface
     {
-        return self::PLATFORM_NAME;
+        return new Sql\PgsqlStrategy();
+    }
+
+    public function getNextSequenceValueSql(string $sequenceName): string
+    {
+        return 'SELECT NEXTVAL(\'"' . $sequenceName . '"\')';
+    }
+
+    public function getCurrentSequenceValueSql(string $sequenceName): string
+    {
+        return 'SELECT CURRVAL(\'"' . $sequenceName . '"\')';
     }
 
     /**
@@ -97,11 +104,5 @@ class AdapterPlatform extends AbstractPlatform
         }
 
         return null;
-    }
-
-    #[Override]
-    public function getSqlPlatformDecorator(): PlatformDecoratorInterface
-    {
-        return new SqlPlatformDecorator($this);
     }
 }

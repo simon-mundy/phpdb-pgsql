@@ -23,7 +23,7 @@ class Result implements ResultInterface
 
     protected int $count = 0;
 
-    protected mixed $generatedValue;
+    protected string|int|null $generatedValue = null;
 
     public function initialize(PgSqlResult $resource, string|int $generatedValue): void
     {
@@ -89,7 +89,7 @@ class Result implements ResultInterface
     }
 
     #[Override]
-    public function getGeneratedValue(): mixed
+    public function getGeneratedValue(): string|int|false|null
     {
         return $this->generatedValue;
     }

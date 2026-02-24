@@ -29,6 +29,12 @@ final class PlatformInterfaceFactory
                 'Invalid or missing driver provided'
             );
         }
-        return new Pgsql\AdapterPlatform($driver);
+        $strategy      = null;
+        $strategyClass = $options['sql_strategy'] ?? null;
+        if ($strategyClass !== null) {
+            $strategy = new $strategyClass();
+        }
+
+        return new Pgsql\AdapterPlatform($driver, $strategy);
     }
 }
