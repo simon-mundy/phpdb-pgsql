@@ -34,9 +34,9 @@
     </source>
     <php>
         <env name="TESTS_PHPDB_PGSQL" value="true"/>
-        <env name="TESTS_PHPDB_PGSQL_HOSTNAME" value="postgresql"/>
-        <env name="TESTS_PHPDB_PGSQL_USERNAME" value="postgres"/>
-        <env name="TESTS_PHPDB_PGSQL_PASSWORD" value="postgres"/>
+        <env name="TESTS_PHPDB_PGSQL_HOSTNAME" value="postgres"/>
+        <env name="TESTS_PHPDB_PGSQL_USERNAME" value="gha"/>
+        <env name="TESTS_PHPDB_PGSQL_PASSWORD" value="password"/>
         <env name="TESTS_PHPDB_PGSQL_DATABASE" value="phpdb_test"/>
     </php>
 </phpunit>

@@ -8,12 +8,12 @@ services:
     volumes:
       - ./:/var/www/html
     depends_on:
-      - postgresql
+      - postgres
 
-  postgresql:
+  postgres:
     build:
       context: ./
-      dockerfile: docker/databases/postgresql/Dockerfile
+      dockerfile: docker/databases/postgres/Dockerfile
       args:
         - VERSION=${VERSION:-17.4}
         - ALPINE_VERSION=${ALPINE_VERSION:-3.21}
