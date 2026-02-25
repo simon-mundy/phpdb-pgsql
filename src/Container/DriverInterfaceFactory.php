@@ -6,8 +6,8 @@ namespace PhpDb\Pgsql\Container;
 
 use Laminas\ServiceManager\ServiceManager;
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Pgsql;
 use PhpDb\Exception\ContainerException;
+use PhpDb\Pgsql;
 use Psr\Container\ContainerInterface;
 
 final class DriverInterfaceFactory

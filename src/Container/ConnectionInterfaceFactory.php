@@ -6,8 +6,8 @@ namespace PhpDb\Pgsql\Container;
 
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
-use PhpDb\Pgsql\Connection;
 use PhpDb\Adapter\Pgsql\Exception\ContainerException;
+use PhpDb\Pgsql\Connection;
 use Psr\Container\ContainerInterface;
 
 use function is_array;

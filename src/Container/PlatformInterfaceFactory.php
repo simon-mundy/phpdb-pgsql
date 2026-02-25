@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhpDb\Pgsql\Container;
 
-use PhpDb\Pgsql;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Exception\ContainerException;
+use PhpDb\Pgsql;
 use Psr\Container\ContainerInterface;
 
 final class PlatformInterfaceFactory
