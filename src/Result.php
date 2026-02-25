@@ -89,7 +89,7 @@ class Result implements ResultInterface
     }
 
     #[Override]
-    public function getGeneratedValue(): mixed
+    public function getGeneratedValue(): int|string|false|null
     {
         return $this->generatedValue;
     }
