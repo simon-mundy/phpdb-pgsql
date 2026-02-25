@@ -6,12 +6,13 @@ namespace PhpDb\Adapter\Pgsql\Container;
 
 use PhpDb\Adapter\Pgsql;
 use PhpDb\Adapter\Platform\PlatformInterface;
+use PhpDb\Exception\ContainerException;
 use Psr\Container\ContainerInterface;
 
 final class PlatformInterfaceFactory
 {
     /**
-     * @throws Pgsql\Exception\ContainerException
+     * @throws ContainerException
      */
     public function __invoke(
         ContainerInterface $container,
@@ -24,8 +25,9 @@ final class PlatformInterfaceFactory
             && ! $driver instanceof Pgsql\Pdo\Driver
         ) {
             // todo: Once latest PR is merged for 0.5.0 update to use PhpDB\Exception\ContainerException
-            throw Pgsql\Exception\ContainerException::forServiceFailure(
+            throw ContainerException::forService(
                 PlatformInterface::class,
+                self::class,
                 'Invalid or missing driver provided'
             );
         }

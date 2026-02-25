@@ -7,6 +7,7 @@ namespace PhpDb\Adapter\Pgsql\Container;
 use Laminas\ServiceManager\ServiceManager;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Pgsql;
+use PhpDb\Exception\ContainerException;
 use Psr\Container\ContainerInterface;
 
 final class DriverInterfaceFactory
@@ -17,12 +18,13 @@ final class DriverInterfaceFactory
         ?array $options = null
     ): DriverInterface {
         if (! $options['connection']) {
-            throw Pgsql\Exception\ContainerException::forServiceFailure(
+            throw ContainerException::forService(
                 Pgsql\Driver::class,
-                self::class . ' can only be used via the ServiceManager\'s build() method
-                with connection parameters passed via $options["connection"]'
+                self::class,
+                '$options["connection"] must contain an array of connection configuration.'
             );
         }
+
         $connection = $container->build(Pgsql\Connection::class, $options);
         return new Pgsql\Driver(
             connection:$connection,
