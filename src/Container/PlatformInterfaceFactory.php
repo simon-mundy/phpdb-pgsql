@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Container;
+namespace PhpDb\Pgsql\Container;
 
-use PhpDb\Adapter\Pgsql;
+use PhpDb\Pgsql;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\Exception\ContainerException;
 use Psr\Container\ContainerInterface;

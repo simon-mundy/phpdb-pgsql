@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Pgsql\Pdo;
+namespace PhpDbIntegrationTest\Pgsql\Pdo;
 
 use PhpDb\Adapter\Adapter;
 use PhpDb\Adapter\AdapterInterface;

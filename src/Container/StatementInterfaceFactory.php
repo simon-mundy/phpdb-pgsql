@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Container;
+namespace PhpDb\Pgsql\Container;
 
 use PhpDb\Adapter\Driver\StatementInterface;
-use PhpDb\Adapter\Pgsql;
+use PhpDb\Pgsql;
 use Psr\Container\ContainerInterface;
 
 final class StatementInterfaceFactory

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Container;
+namespace PhpDb\Pgsql\Container;
 
 use PhpDb\Adapter\Driver\Pdo\Statement as PdoStatement;
 use PhpDb\Adapter\Driver\StatementInterface;

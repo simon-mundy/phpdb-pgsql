@@ -11,7 +11,7 @@ use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Pgsql;
+use PhpDb\Pgsql;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\ConfigProvider as PhpDbConfigProvider;
 use Psr\Container\ContainerInterface;

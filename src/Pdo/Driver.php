@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Pdo;
+namespace PhpDb\Pgsql\Pdo;
 
 use Override;
 use PDOStatement;
 use PhpDb\Adapter\Driver\Pdo\AbstractPdo;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\ResultInterface;
-use PhpDb\Adapter\Pgsql\DatabasePlatformNameTrait;
+use PhpDb\Pgsql\DatabasePlatformNameTrait;
 
 class Driver extends AbstractPdo
 {

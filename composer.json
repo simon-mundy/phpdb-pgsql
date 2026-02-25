@@ -26,7 +26,7 @@
     },
     "extra": {
         "laminas": {
-            "config-provider": "PhpDb\\Adapter\\Pgsql\\ConfigProvider"
+            "config-provider": "PhpDb\\Pgsql\\ConfigProvider"
         }
     },
     "require": {
@@ -48,14 +48,14 @@
     },
     "autoload": {
         "psr-4": {
-            "PhpDb\\Adapter\\Pgsql\\": "src/"
+            "PhpDb\\Pgsql\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PhpDbTest\\Adapter\\Pgsql\\": "test/unit/",
+            "PhpDbTest\\Pgsql\\": "test/unit/",
             "PhpDbTestAsset\\Pgsql\\": "test/asset/",
-            "PhpDbIntegrationTest\\Adapter\\Pgsql\\": "test/integration/"
+            "PhpDbIntegrationTest\\Pgsql\\": "test/integration/"
         }
     },
     "scripts": {

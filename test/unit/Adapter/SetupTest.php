@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Pgsql\Adapter;
+namespace PhpDbTest\Pgsql;
 
 use PhpDb\Adapter\AdapterInterface;
 use PhpDbTestAsset\Pgsql\SetupTrait;

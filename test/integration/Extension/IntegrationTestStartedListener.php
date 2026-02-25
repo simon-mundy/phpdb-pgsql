@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Pgsql\Extension;
+namespace PhpDbIntegrationTest\Pgsql\Extension;
 
 use Exception;
-use PhpDbIntegrationTest\Adapter\Pgsql\FixtureLoader\FixtureLoaderInterface;
-use PhpDbIntegrationTest\Adapter\Pgsql\FixtureLoader\PgsqlFixtureLoader;
+use PhpDbIntegrationTest\Pgsql\FixtureLoader\FixtureLoaderInterface;
+use PhpDbIntegrationTest\Pgsql\FixtureLoader\PgsqlFixtureLoader;
 use PHPUnit\Event\TestSuite\Started;
 use PHPUnit\Event\TestSuite\StartedSubscriber;
 
@@ -27,7 +27,7 @@ final class IntegrationTestStartedListener implements StartedSubscriber
             return;
         }
 
-        if ((bool) getenv('TESTS_PHPDB_ADAPTER_PGSQL')) {
+        if ((bool) getenv('TESTS_PHPDB_PGSQL')) {
             $this->fixtureLoaders[] = new PgsqlFixtureLoader();
         }
 

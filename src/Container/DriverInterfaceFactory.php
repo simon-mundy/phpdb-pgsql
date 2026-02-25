@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Container;
+namespace PhpDb\Pgsql\Container;
 
 use Laminas\ServiceManager\ServiceManager;
 use PhpDb\Adapter\Driver\DriverInterface;
-use PhpDb\Adapter\Pgsql;
+use PhpDb\Pgsql;
 use PhpDb\Exception\ContainerException;
 use Psr\Container\ContainerInterface;
 

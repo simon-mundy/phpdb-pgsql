@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Pgsql\FixtureLoader;
+namespace PhpDbIntegrationTest\Pgsql\FixtureLoader;
 
 interface FixtureLoaderInterface
 {

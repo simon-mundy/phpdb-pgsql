@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Container;
+namespace PhpDb\Pgsql\Container;
 
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
-use PhpDb\Adapter\Pgsql\Exception\ContainerException;
-use PhpDb\Adapter\Pgsql\Pdo;
+use PhpDb\Exception\ContainerException;
+use PhpDb\Pgsql\Pdo;
 use Psr\Container\ContainerInterface;
 
 use function is_array;
@@ -29,8 +29,9 @@ final class PdoConnectionInterfaceFactory
     ): PdoConnectionInterface&Pdo\Connection {
         if (! $container->has('config')) {
             // todo: Once latest PR is merged for 0.5.0 update to use PhpDB\Exception\ContainerException
-            throw ContainerException::forServiceFailure(
+            throw ContainerException::forService(
                 Pdo\Connection::class,
+                self::class,
                 'Container is missing a config service'
             );
         }

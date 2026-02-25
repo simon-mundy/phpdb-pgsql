@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Pdo;
+namespace PhpDb\Pgsql\Pdo;
 
 use Override;
 use PDO;
