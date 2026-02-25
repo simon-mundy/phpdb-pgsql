@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Metadata;
+namespace PhpDb\Pgsql\Metadata;
 
 use DateTime;
 use Override;

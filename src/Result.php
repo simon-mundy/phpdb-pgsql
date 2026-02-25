@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql;
+namespace PhpDb\Pgsql;
 
 use Override;
 use PgSql\Result as PgSqlResult;
@@ -89,7 +89,7 @@ class Result implements ResultInterface
     }
 
     #[Override]
-    public function getGeneratedValue(): mixed
+    public function getGeneratedValue(): int|string|false|null
     {
         return $this->generatedValue;
     }

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Pgsql;
+namespace PhpDbIntegrationTest\Pgsql;
 
 use PhpDb\Adapter\Exception\VunerablePlatformQuoteException;
-use PhpDb\Adapter\Pgsql\AdapterPlatform;
+use PhpDb\Pgsql\AdapterPlatform;
 use PhpDbTestAsset\Pgsql\SetupTrait;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\CoversMethod;

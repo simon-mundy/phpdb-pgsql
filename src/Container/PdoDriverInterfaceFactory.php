@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Container;
+namespace PhpDb\Pgsql\Container;
 
 use Laminas\ServiceManager\ServiceManager;
 use PhpDb\Adapter\AdapterInterface;
 use PhpDb\Adapter\Driver\Pdo\Result;
 use PhpDb\Adapter\Driver\Pdo\Statement;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Pgsql\Exception\ContainerException;
-use PhpDb\Adapter\Pgsql\Pdo;
+use PhpDb\Exception\ContainerException;
+use PhpDb\Pgsql\Pdo;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -25,8 +25,9 @@ final class PdoDriverInterfaceFactory
     ): PdoDriverInterface&Pdo\Driver {
         if (! $container->has('config')) {
             // todo: Once latest PR is merged for 0.5.0 update to use PhpDB\Exception\ContainerException
-            throw ContainerException::forServiceFailure(
+            throw ContainerException::forService(
                 Pdo\Driver::class,
+                self::class,
                 'Container is missing a config service'
             );
         }

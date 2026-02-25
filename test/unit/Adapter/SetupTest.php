@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDbTest\Adapter\Pgsql\Adapter;
+namespace PhpDbTest\Pgsql;
 
 use PhpDb\Adapter\AdapterInterface;
 use PhpDbTestAsset\Pgsql\SetupTrait;
@@ -22,7 +22,7 @@ final class SetupTest extends TestCase
 
     public function testAdapterInterfaceFactoryBuildsNativeDriver(): void
     {
-        $adapter = $this->getAdapter(AdapterInterface::class);
+        $adapter = $this->getAdapter(self::NATIVE_ADAPTER);
         self::assertInstanceOf(AdapterInterface::class, $adapter);
     }
 }

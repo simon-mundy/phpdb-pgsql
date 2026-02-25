@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpDbIntegrationTest\Adapter\Pgsql\Extension;
+namespace PhpDbIntegrationTest\Pgsql\Extension;
 
-use PhpDbIntegrationTest\Adapter\Pgsql\FixtureLoader\FixtureLoaderInterface;
+use PhpDbIntegrationTest\Pgsql\FixtureLoader\FixtureLoaderInterface;
 use PHPUnit\Event\TestSuite\Finished;
 use PHPUnit\Event\TestSuite\FinishedSubscriber;
 

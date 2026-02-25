@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql;
+namespace PhpDb\Pgsql;
 
 use Override;
 use PgSql\Connection as PgSqlConnection;

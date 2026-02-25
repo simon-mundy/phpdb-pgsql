@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Container;
+namespace PhpDb\Pgsql\Container;
 
 final class MetadataInterfaceFactory
 {

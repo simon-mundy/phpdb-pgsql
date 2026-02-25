@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpDb\Adapter\Pgsql\Container;
+namespace PhpDb\Pgsql\Container;
 
 use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Exception\InvalidConnectionParametersException;
-use PhpDb\Adapter\Pgsql\Connection;
 use PhpDb\Adapter\Pgsql\Exception\ContainerException;
+use PhpDb\Pgsql\Connection;
 use Psr\Container\ContainerInterface;
 
 use function is_array;

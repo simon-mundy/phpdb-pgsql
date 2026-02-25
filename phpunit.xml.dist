@@ -13,6 +13,10 @@
          failOnNotice="true"
          failOnDeprecation="true"
          failOnWarning="true">
+
+    <extensions>
+        <bootstrap class="PhpDbIntegrationTest\Pgsql\Extension\ListenerExtension" />
+    </extensions>
     <testsuites>
         <testsuite name="unit test">
             <directory>./test/unit</directory>
@@ -29,10 +33,10 @@
         </include>
     </source>
     <php>
-        <env name="TESTS_PHPDB_ADAPTER_PGSQL" value="true"/>
-        <env name="TESTS_PHPDB_ADAPTER_PGSQL_HOSTNAME" value="postgresql"/>
-        <env name="TESTS_PHPDB_ADAPTER_PGSQL_USERNAME" value="postgres"/>
-        <env name="TESTS_PHPDB_ADAPTER_PGSQL_PASSWORD" value="postgres"/>
-        <env name="TESTS_PHPDB_ADAPTER_PGSQL_DATABASE" value="phpdb_test"/>
+        <env name="TESTS_PHPDB_PGSQL" value="true"/>
+        <env name="TESTS_PHPDB_PGSQL_HOSTNAME" value="postgres"/>
+        <env name="TESTS_PHPDB_PGSQL_USERNAME" value="postgres"/>
+        <env name="TESTS_PHPDB_PGSQL_PASSWORD" value="password"/>
+        <env name="TESTS_PHPDB_PGSQL_DATABASE" value="phpdb_test"/>
     </php>
 </phpunit>

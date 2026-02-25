@@ -33,7 +33,6 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_USER: 'gha'
           POSTGRES_PASSWORD: 'password'
           POSTGRES_DB: 'phpdb_test'
         options: >-

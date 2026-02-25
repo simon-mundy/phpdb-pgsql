@@ -11,9 +11,9 @@ use PhpDb\Adapter\Driver\ConnectionInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\PdoConnectionInterface;
 use PhpDb\Adapter\Driver\PdoDriverInterface;
-use PhpDb\Adapter\Pgsql;
 use PhpDb\Adapter\Platform\PlatformInterface;
 use PhpDb\ConfigProvider as PhpDbConfigProvider;
+use PhpDb\Pgsql;
 use Psr\Container\ContainerInterface;
 
 use function getenv;
@@ -27,11 +27,11 @@ trait SetupTrait
     protected function setUp(): void
     {
         $conn       = [
-            'host'     => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_HOSTNAME'),
+            'host'     => (string) getenv('TESTS_PHPDB_PGSQL_HOSTNAME'),
             'port'     => 5432,
-            'username' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_USERNAME'),
-            'password' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_PASSWORD'),
-            'database' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_DATABASE'),
+            'username' => (string) getenv('TESTS_PHPDB_PGSQL_USERNAME'),
+            'password' => (string) getenv('TESTS_PHPDB_PGSQL_PASSWORD'),
+            'database' => (string) getenv('TESTS_PHPDB_PGSQL_DATABASE'),
         ];
         $this->conn = $conn;
         parent::setUp();
@@ -87,21 +87,21 @@ trait SetupTrait
                     self::NATIVE_ADAPTER => [
                         'driver'     => Pgsql\Driver::class,
                         'connection' => [
-                            'host'     => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_HOSTNAME'),
+                            'host'     => (string) getenv('TESTS_PHPDB_PGSQL_HOSTNAME'),
                             'port'     => 5432,
-                            'username' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_USERNAME'),
-                            'password' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_PASSWORD'),
-                            'database' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_DATABASE'),
+                            'username' => (string) getenv('TESTS_PHPDB_PGSQL_USERNAME'),
+                            'password' => (string) getenv('TESTS_PHPDB_PGSQL_PASSWORD'),
+                            'database' => (string) getenv('TESTS_PHPDB_PGSQL_DATABASE'),
                         ],
                     ],
                     self::PDO_ADAPTER    => [
                         'driver'     => Pgsql\Pdo\Driver::class,
                         'connection' => [
-                            'host'     => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_HOSTNAME'),
+                            'host'     => (string) getenv('TESTS_PHPDB_PGSQL_HOSTNAME'),
                             'port'     => 5432,
-                            'username' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_USERNAME'),
-                            'password' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_PASSWORD'),
-                            'database' => (string) getenv('TESTS_PHPDB_ADAPTER_PGSQL_DATABASE'),
+                            'username' => (string) getenv('TESTS_PHPDB_PGSQL_USERNAME'),
+                            'password' => (string) getenv('TESTS_PHPDB_PGSQL_PASSWORD'),
+                            'database' => (string) getenv('TESTS_PHPDB_PGSQL_DATABASE'),
                         ],
                     ],
                 ],
