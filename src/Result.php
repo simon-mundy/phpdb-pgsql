@@ -25,7 +25,7 @@ class Result implements ResultInterface
 
     protected mixed $generatedValue;
 
-    public function initialize(PgSqlResult $resource, string|int $generatedValue): void
+    public function initialize(PgSqlResult $resource, string|int|null $generatedValue): void
     {
         $this->resource       = $resource;
         $this->count          = pg_num_rows($this->resource);
