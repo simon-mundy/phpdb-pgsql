@@ -7,6 +7,7 @@ namespace PhpDb\Pgsql;
 use Override;
 use PgSql\Result as PgSqlResult;
 use PhpDb\Adapter\Driver\ConnectionInterface;
+use PhpDb\Adapter\Driver\DriverAwareInterface;
 use PhpDb\Adapter\Driver\DriverInterface;
 use PhpDb\Adapter\Driver\ResultInterface;
 use PhpDb\Adapter\Driver\StatementInterface;
@@ -24,8 +25,6 @@ use function is_string;
  */
 class Driver implements DriverInterface, ProfilerAwareInterface
 {
-    use DatabasePlatformNameTrait;
-
     protected ?ProfilerInterface $profiler = null;
 
     /** @var array */
@@ -34,9 +33,9 @@ class Driver implements DriverInterface, ProfilerAwareInterface
     ];
 
     public function __construct(
-        protected readonly ConnectionInterface&Connection $connection,
-        protected readonly StatementInterface&Statement $statementPrototype,
-        protected readonly ResultInterface&Result $resultPrototype,
+        protected readonly DriverAwareInterface&ConnectionInterface&Connection $connection,
+        protected readonly DriverAwareInterface&StatementInterface&Statement $statementPrototype = new Statement(),
+        protected readonly ResultInterface&Result $resultPrototype = new Result(),
         array $options = []
     ) {
         $this->checkEnvironment();
@@ -55,9 +54,15 @@ class Driver implements DriverInterface, ProfilerAwareInterface
     ): DriverInterface&ProfilerAwareInterface {
         $this->profiler = $profiler;
 
-        $this->connection->setProfiler($profiler);
+        // @phpstan-ignore instanceof.alwaysTrue
+        if ($this->connection instanceof ProfilerAwareInterface) {
+            $this->connection->setProfiler($profiler);
+        }
 
-        $this->statementPrototype->setProfiler($profiler);
+        // @phpstan-ignore instanceof.alwaysTrue
+        if ($this->statementPrototype instanceof ProfilerAwareInterface) {
+            $this->statementPrototype->setProfiler($profiler);
+        }
 
         return $this;
     }
