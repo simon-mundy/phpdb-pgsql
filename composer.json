@@ -37,7 +37,7 @@
         "ext-pdo_pgsql": "*",
         "ext-pgsql": "*",
         "laminas/laminas-coding-standard": "^3.0.1",
-        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan": "^2.2",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpunit/phpunit": "^11.5.42"
     },
